@@ -1,0 +1,110 @@
+﻿@page "/editplayer"
+
+
+@using CricketManager.Models
+@inject NavigationManager NavigationManager
+
+<h3>Add Player</h3>
+
+<div class="demo-section">
+    @if (ValidSubmit)
+    {
+        <div class="demo-alert demo-alert-success" role="alert">
+            The form was submitted successfully.
+        </div>
+    }
+    else
+    {
+        <TelerikForm EditContext="@TestEditContext"
+                 @ref="@FormRef"
+                 OnValidSubmit="@HandleValidSubmit"
+                 OnInvalidSubmit="@HandleInvalidSubmit">
+            <FormValidation>
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+            </FormValidation>
+            <FormItems>
+                <FormItem LabelText=" Name" Field="@(nameof(addplayer.Name))" />
+                <FormItem Field="@(nameof(addplayer.DateofBirth))" />
+                <FormItem LabelText="Position" Field="@(nameof(addplayer.Position))" />
+                @* <FormItem LabelText="Captian:" />*@
+                <labeltext>Captain :</labeltext>
+                <TelerikRadioGroup Data="@value"
+                               @bind-Value="@SelectedValue"></TelerikRadioGroup>
+
+                <FormItem LabelText="BowlingStyle" Field="@(nameof(addplayer.BowlingStyle))" />
+                <FormItem LabelText="Rating" Field="@(nameof(addplayer.Rating))" />
+            </FormItems>
+            <FormButtons>
+                <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Warning)">Delete Team</TelerikButton>
+                <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+                <TelerikButton ButtonType="ButtonType.Button" OnClick="@OnClear">Reset</TelerikButton>
+            </FormButtons>
+        </TelerikForm>
+    }
+</div>
+@code {
+    public IsCaptain SelectedValue { get; set; } = IsCaptain.No;
+    public List<Captain> value { get; set; } = new List<Captain>()
+    {
+        new Captain() { Text = "Yes", Value = IsCaptain.Yes },
+        new Captain() { Text = "No", Value = IsCaptain.No },
+    };
+
+    public class Captain
+    {
+        public string Text { get; set; }
+        public IsCaptain Value { get; set; }
+
+        public Captain()
+        {
+        }
+    }
+
+    public enum IsCaptain
+    {
+        Yes,
+        No
+    }
+    public TelerikForm FormRef { get; set; }
+
+    public EditContext TestEditContext { get; set; }
+    public bool ValidSubmit { get; set; } = false;
+
+    public addplayer TestApplication { get; set; } = new addplayer();
+
+    public List<captainmodel> captain { get; set; } = new List<captainmodel>()
+{
+        new captainmodel() { Value = 1, Text = "Yes" },
+        new captainmodel() { Value = 2, Text = "No" },
+    };
+
+    protected override void OnInitialized()
+    {
+        TestEditContext = new EditContext(TestApplication);
+        base.OnInitialized();
+    }
+
+    private void OnClear()
+    {
+        TestApplication = new addplayer();
+
+        TestEditContext = new EditContext(TestApplication);
+        TestEditContext.EnableDataAnnotationsValidation();
+    }
+
+    async void HandleValidSubmit()
+    {
+        ValidSubmit = true;
+
+        await Task.Delay(2000);
+
+        ValidSubmit = false;
+
+        StateHasChanged();
+    }
+
+    void HandleInvalidSubmit()
+    {
+        ValidSubmit = false;
+    }
+}

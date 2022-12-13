@@ -27,6 +27,7 @@
              </FormItems>
             <FormButtons>
                 <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+                <TelerikButton ButtonType="ButtonType.Button">Reset</TelerikButton>
             </FormButtons>
         </TelerikForm>
 
@@ -40,6 +41,7 @@
             Manager = "neeraj",
             Contact = "987867567785",
         };
+   
     public bool ValidSubmit { get; set; } = false;
 
     async void HandleValidSubmit()
