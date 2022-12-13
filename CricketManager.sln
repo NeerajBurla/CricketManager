@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CricketManager", "CricketManager.csproj", "{93AC48A9-5CFF-4945-8993-E02B4DCDA593}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93AC48A9-5CFF-4945-8993-E02B4DCDA593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93AC48A9-5CFF-4945-8993-E02B4DCDA593}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93AC48A9-5CFF-4945-8993-E02B4DCDA593}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93AC48A9-5CFF-4945-8993-E02B4DCDA593}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {82C57567-78E9-4AAC-9E6C-EB1148B3DAA4}
+	EndGlobalSection
+EndGlobal

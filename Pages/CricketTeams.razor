@@ -1,0 +1,50 @@
+﻿@page "/cricketteams"
+
+@using CricketManager.Models
+
+<h3>Cricket Teams</h3>
+
+
+<TelerikGrid Data="@theData" Height="150px" Width="800px">
+    <GridColumns>
+        <GridColumn Field="@(nameof(cricketteam.Name))" />
+        <GridColumn Field="@(nameof(cricketteam.NumberofPlayers))" />
+    </GridColumns>
+</TelerikGrid>
+
+@code {
+    public class cricketteam
+    {
+        public string Name { get; set; }
+        public string NumberofPlayers { get; set; }
+    }
+
+    public List<cricketteam> theData = new List<cricketteam>
+    {
+        new cricketteam
+        {
+            Name = "Nec",
+            NumberofPlayers = "2",
+        },
+        new cricketteam
+        {
+            Name = "Raas",
+            NumberofPlayers = "4"
+        },
+        new cricketteam
+        {
+            Name = "Apollo",
+            NumberofPlayers = "10"
+        },
+         new cricketteam
+        {
+            Name = "Registry",
+            NumberofPlayers = "20"
+        },
+         new cricketteam
+        {
+            Name = "Test",
+            NumberofPlayers = "203"
+        }
+    };
+}

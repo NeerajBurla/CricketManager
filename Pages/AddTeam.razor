@@ -1,0 +1,57 @@
+﻿@page "/addteam"
+
+@using CricketManager.Models
+
+<h3>Add Team</h3>
+
+<div class="demo-section">
+    @if (ValidSubmit)
+    {
+        <div class="demo-alert demo-alert-success" role="alert">
+            The form was submitted successfully.
+        </div>
+
+    }
+    else
+    {
+        <TelerikForm Model="@addteam"
+                 OnValidSubmit="@HandleValidSubmit"
+                 OnInvalidSubmit="@HandleInvalidSubmit">
+            <FormValidation>
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+            </FormValidation>
+            <FormItems>
+                <FormItem Field="@nameof(addteam.Name)"></FormItem>@*<label for="Name" class="k-label k-form-label">Name*:</label>*@
+                <FormItem Field="@nameof(addteam.Manager)"></FormItem>
+                <FormItem Field="@nameof(addteam.Contact)"></FormItem>
+             </FormItems>
+        </TelerikForm>
+
+    }
+</div>
+
+@code {
+    public addteam addteam { get; set; } = new addteam()
+        {
+            Name = "Nec",
+            Manager = "neeraj",
+            Contact = "987867567785",
+        };
+    public bool ValidSubmit { get; set; } = false;
+
+    async void HandleValidSubmit()
+    {
+        ValidSubmit = true;
+
+        await Task.Delay(2000);
+
+        ValidSubmit = false;
+
+        StateHasChanged();
+    }
+
+    void HandleInvalidSubmit()
+    {
+        ValidSubmit = false;
+    }
+}
