@@ -34,10 +34,14 @@
                 <GridColumn Field="@(nameof(addplayer.Position))" />
                 <GridColumn Field="@(nameof(addplayer.Captain))" />
             </GridColumns>
-        </TelerikGrid>
-    <a href="AddPlayer">Add New Player</a>
-
-
+    </TelerikGrid>
+        <TelerikButton>
+        <a href="AddPlayer">Add New Player</a>
+        </TelerikButton>
+    <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Warning)">Delete Team</TelerikButton>
+    <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+    <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Secondary)">Cancel</TelerikButton>
+  
 </div>
 @code {
     public addteam addteam { get; set; } = new addteam()
