@@ -6,6 +6,7 @@ namespace CricketManager.Models
     {
         public string Name { get; set; }
 
+        [Display(Name = "Number of Players")]
         public string NumberofPlayers { get; set; }
     }
 }

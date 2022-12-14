@@ -3,6 +3,7 @@
 
 @using CricketManager.Models
 @inject NavigationManager NavigationManager
+@inject HttpClient Http
 
 <h3>Add Player</h3>
 
@@ -15,7 +16,7 @@
     }
     else
     {
-        <TelerikForm EditContext="@TestEditContext"
+      <TelerikForm EditContext="@TestEditContext"
                  @ref="@FormRef"
                  OnValidSubmit="@HandleValidSubmit"
                  OnInvalidSubmit="@HandleInvalidSubmit">
@@ -26,22 +27,49 @@
                 <FormItem LabelText=" Name" Field="@(nameof(addplayer.Name))" />
                 <FormItem Field="@(nameof(addplayer.DateofBirth))"/>
                 <FormItem LabelText="Position" Field="@(nameof(addplayer.Position))" />
-                @* <FormItem LabelText="Captian:" />*@
                 <labeltext>Captain :</labeltext>
                 <TelerikRadioGroup Data="@value"
                                    @bind-Value="@SelectedValue"></TelerikRadioGroup>
-        
+
+                <FormItem LabelText="BattingOrder" Field="@(nameof(addplayer.BattingOrder))" />
                 <FormItem LabelText="BowlingStyle" Field="@(nameof(addplayer.BowlingStyle))" />
                 <FormItem LabelText="Rating" Field="@(nameof(addplayer.Rating))" />
             </FormItems>
             <FormButtons>
-                <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+                <TelerikButton ButtonType="ButtonType.Submit" OnClick="AddingtoEditTeam" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
                 <TelerikButton ButtonType="ButtonType.Button" OnClick="@OnClear">Reset</TelerikButton>
             </FormButtons>
         </TelerikForm>
+
+        <TelerikGrid Data="@forecasts" Height="150px" Width="800px">
+            <GridColumns>
+                <GridColumn Field="@(nameof(addplayer.Name))" />
+                <GridColumn Field="@(nameof(addplayer.DateofBirth))" />
+                <GridColumn Field="@(nameof(addplayer.Position))" />
+                <GridColumn Field="@(nameof(addplayer.Captain))" />
+                <GridColumn Field="@(nameof(addplayer.BattingOrder))" />
+                <GridColumn Field="@(nameof(addplayer.BowlingStyle))" />
+                <GridColumn Field="@(nameof(addplayer.Rating))" />
+            </GridColumns>
+        </TelerikGrid>
     }
 </div>
 @code {
+    private addplayer[] forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Http.BaseAddress = new Uri("https://localhost:5001/");
+        var url = new Uri(Http.BaseAddress+"JsonData/aplayer.json");
+
+        var playerinfo = await Http.GetAsync(url);
+        var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
+
+
+        forecasts = JsonConvert.DeserializeObject<addplayer[]>(playerResponseInfo);
+    }
+
+
     public IsCaptain SelectedValue { get; set; } = IsCaptain.No;
     public List<Captain> value { get; set; } = new List<Captain>()
     {
@@ -105,5 +133,9 @@
     void HandleInvalidSubmit()
     {
         ValidSubmit = false;
+    }
+    public void AddingtoEditTeam()
+    {
+        NavigationManager.NavigateTo("EditTeam");
     }
 }

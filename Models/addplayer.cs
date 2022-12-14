@@ -20,16 +20,13 @@ namespace CricketManager.Models
  
         [Required(ErrorMessage = "Batting Order between 1 and 11")]
         [Range(1, 11, ErrorMessage = "Batting Order between 1 and 11")]
-        [Display(Name = "BattingOrder")]
-        public int? BattingOrder { get; set; }
+        public int BattingOrder { get; set; }
 
         [Required]
         public BowlingStyle? BowlingStyle { get; set; }
 
         [Required]
         public Rating? Rating { get; set; }
-
-
 
     }
 
@@ -54,6 +51,18 @@ namespace CricketManager.Models
         Poor,
         Rubbish,
     }
+    //public int BattingOrders
+    //{
+    //    1,
+    //    2,
+    //    3,
+    //    4,
+    //    5,
+    //    6,
+    //    7,
+    //    8,
+    //    9,
+    //};
 
 
 }

@@ -1,0 +1,17 @@
+{
+  {
+     "Name" : "NEC",
+     "Manager" : "neeraj",
+     "Contact" :987867567785
+  },
+  {
+    "Name": "TCS",
+    "Manager": "Amol",
+    "Contact": 987867567785
+  },
+  {
+    "Name": "WIPRO",
+    "Manager": "Sohail",
+    "Contact": 98786567785
+  }
+}

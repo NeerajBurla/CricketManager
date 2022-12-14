@@ -1,6 +1,7 @@
 ﻿@page "/addteam"
 
 @using CricketManager.Models
+@inject NavigationManager NavigationManager
 
 <h3>Add Team</h3>
 
@@ -21,12 +22,12 @@
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidation>
             <FormItems>
-                <FormItem Field="@nameof(addteam.Name)"></FormItem>@*<label for="Name" class="k-label k-form-label">Name*:</label>*@
+                <FormItem Field="@nameof(addteam.Name)"></FormItem>
                 <FormItem Field="@nameof(addteam.Manager)"></FormItem>
                 <FormItem Field="@nameof(addteam.Contact)"></FormItem>
              </FormItems>
             <FormButtons>
-                <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+                <TelerikButton ButtonType="ButtonType.Submit" OnClick="Toeditteam" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
                 <TelerikButton ButtonType="ButtonType.Button">Reset</TelerikButton>
             </FormButtons>
         </TelerikForm>
@@ -58,5 +59,10 @@
     void HandleInvalidSubmit()
     {
         ValidSubmit = false;
+    }
+
+     public void Toeditteam()
+    {
+        NavigationManager.NavigateTo("EditTeam");
     }
 }

@@ -1,0 +1,20 @@
+[
+  {
+    "Name": "Neeraj",
+    "DateofBirth": "14/02/1999",
+    "Position": "Batter",
+    "Captain": "Yes",
+    "BattingOrder": 2,
+    "BowlingStyle": "Fast",
+    "Rating": "Excellent"
+  },
+  {
+    "Name": "Amol",
+    "DateofBirth": "12/02/1999",
+    "Position": "Batter",
+    "Captain": "No",
+    "BattingOrder": 1,
+    "BowlingStyle": "Fast",
+    "Rating": "Excellent"
+  }
+]

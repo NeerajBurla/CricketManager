@@ -14,7 +14,7 @@
     {
         <TelerikForm Model="@addteam"
                  OnValidSubmit="@HandleValidSubmit"
-                 OnInvalidSubmit="@HandleInvalidSubmit">
+                 OnInvalidSubmit="@HandleInvalidSubmit" >
             <FormValidation>
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidation>
@@ -23,6 +23,7 @@
                 <FormItem Field="@nameof(addteam.Manager)"></FormItem>
                 <FormItem Field="@nameof(addteam.Contact)"></FormItem>
             </FormItems>
+            <FormButtons></FormButtons>
         </TelerikForm>
     }
 </div>
@@ -70,13 +71,13 @@
 
     public List<addplayer> theData = new List<addplayer>
     {
-        new addplayer
-        {
-            Name = "Nec",
-            DateofBirth = "21",
-            Position = Position.Batter,
-            Captain ="Yes",
-        },
+        //new addplayer
+        //{
+        //    Name = "Nec",
+        //    DateofBirth = "21",
+        //    Position = Position.Batter,
+        //    Captain ="Yes",
+        //},
         new addplayer
         {
             Name = "Raas",
@@ -84,12 +85,12 @@
             Position = Position.Wicketkeeper,
             Captain ="No",
         },
-        new addplayer
-        {
-            Name = "Apollo",
-            DateofBirth = "23",
-            Position = Position.Bowler,
-            Captain ="Yes"
-        },
+        //new addplayer
+        //{
+        //    Name = "Apollo",
+        //    DateofBirth = "23",
+        //    Position = Position.Bowler,
+        //    Captain ="Yes"
+        //},
     };
 }
