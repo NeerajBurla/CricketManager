@@ -2,6 +2,7 @@
 
 
 @using CricketManager.Models
+@using System.Text;
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 
@@ -16,9 +17,8 @@
     }
     else
     {
-      <TelerikForm EditContext="@TestEditContext"
+      <TelerikForm Model="newPlayer"
                  @ref="@FormRef"
-                 OnValidSubmit="@HandleValidSubmit"
                  OnInvalidSubmit="@HandleInvalidSubmit">
             <FormValidation>
                 <DataAnnotationsValidator></DataAnnotationsValidator>
@@ -36,12 +36,13 @@
                 <FormItem LabelText="Rating" Field="@(nameof(addplayer.Rating))" />
             </FormItems>
             <FormButtons>
-                <TelerikButton ButtonType="ButtonType.Submit" OnClick="AddingtoEditTeam" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
-                <TelerikButton ButtonType="ButtonType.Button" OnClick="@OnClear">Reset</TelerikButton>
+                <input type="submit" value="Save" @onclick="HandleValidSubmit" class="btn btn-primary" />
+@*                <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+*@                @*<TelerikButton ButtonType="ButtonType.Button" OnClick="@OnClear">Reset</TelerikButton>*@
             </FormButtons>
         </TelerikForm>
 
-        <TelerikGrid Data="@forecasts" Height="150px" Width="800px">
+       @* <TelerikGrid Data="@forecasts" Height="150px" Width="800px">
             <GridColumns>
                 <GridColumn Field="@(nameof(addplayer.Name))" />
                 <GridColumn Field="@(nameof(addplayer.DateofBirth))" />
@@ -51,7 +52,7 @@
                 <GridColumn Field="@(nameof(addplayer.BowlingStyle))" />
                 <GridColumn Field="@(nameof(addplayer.Rating))" />
             </GridColumns>
-        </TelerikGrid>
+        </TelerikGrid>*@
     }
 </div>
 @code {
@@ -59,6 +60,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        newPlayer = new addplayer();
         Http.BaseAddress = new Uri("https://localhost:5001/");
         var url = new Uri(Http.BaseAddress+"JsonData/aplayer.json");
 
@@ -94,7 +96,7 @@
     }
     public TelerikForm FormRef { get; set; }
 
-    public EditContext TestEditContext { get; set; }
+    public addplayer newPlayer { get; set; }
     public bool ValidSubmit { get; set; } = false;
 
     public addplayer TestApplication { get; set; } = new addplayer();
@@ -107,27 +109,44 @@
 
     protected override void OnInitialized()
     {
-        TestEditContext = new EditContext(TestApplication);
+        //TestEditContext = new EditContext(TestApplication);
         base.OnInitialized();
     }
 
-    private void OnClear()
-    {
-        TestApplication = new addplayer();
+    //private void OnClear()
+    //{
+    //    TestApplication = new addplayer();
 
-        TestEditContext = new EditContext(TestApplication);
-        TestEditContext.EnableDataAnnotationsValidation();
+    //    TestEditContext = new EditContext(TestApplication);
+    //    TestEditContext.EnableDataAnnotationsValidation();
+    //}
+
+    public void HandleValidSubmit()
+    {
+        //Http.BaseAddress = new Uri("https://localhost:5001/");
+        var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
+
+        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
+
+        var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
+
+        jsonObj.Add(newPlayer);
+        
+
+        var updatedJson = JsonConvert.SerializeObject(jsonObj);
+
+        File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
+
+      
+        //System.IO.File.AppendAllText("wwwroot/JsonData/aplayer.json", content);
+
     }
 
-    async void HandleValidSubmit()
+    public string AddObjectsToJson<T>(string json, List<T> objects)
     {
-        ValidSubmit = true;
-
-        await Task.Delay(2000);
-
-        ValidSubmit = false;
-
-        StateHasChanged();
+        List<T> list = JsonConvert.DeserializeObject<List<T>>(json);
+        list.AddRange(objects);
+        return JsonConvert.SerializeObject(list);
     }
 
     void HandleInvalidSubmit()

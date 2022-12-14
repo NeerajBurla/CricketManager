@@ -2,7 +2,7 @@
 
 namespace CricketManager.Models
 {
-    public class cricketteam
+    public class CricketTeam
     {
         public string Name { get; set; }
 

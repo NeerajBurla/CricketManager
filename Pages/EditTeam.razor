@@ -1,4 +1,5 @@
 ﻿@page "/editteam"
+@inject HttpClient Http
 
 <h3>Edit Team</h3>
 
@@ -53,6 +54,18 @@
         };
     public bool ValidSubmit { get; set; } = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        Http.BaseAddress = new Uri("https://localhost:5001/");
+        var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
+
+        var playerinfo = await Http.GetAsync(url);
+        var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
+
+
+        theData = JsonConvert.DeserializeObject<addplayer[]>(playerResponseInfo);
+    }
+
     async void HandleValidSubmit()
     {
         ValidSubmit = true;
@@ -69,28 +82,5 @@
         ValidSubmit = false;
     }
 
-    public List<addplayer> theData = new List<addplayer>
-    {
-        //new addplayer
-        //{
-        //    Name = "Nec",
-        //    DateofBirth = "21",
-        //    Position = Position.Batter,
-        //    Captain ="Yes",
-        //},
-        new addplayer
-        {
-            Name = "Raas",
-            DateofBirth = "22",
-            Position = Position.Wicketkeeper,
-            Captain ="No",
-        },
-        //new addplayer
-        //{
-        //    Name = "Apollo",
-        //    DateofBirth = "23",
-        //    Position = Position.Bowler,
-        //    Captain ="Yes"
-        //},
-    };
+    public addplayer[] theData;
 }

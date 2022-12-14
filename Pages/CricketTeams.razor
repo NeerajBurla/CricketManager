@@ -7,8 +7,8 @@
 
 <TelerikGrid Data="@theData" Height="150px" Width="800px">
     <GridColumns>
-        <GridColumn Field="@(nameof(cricketteam.Name))" />
-        <GridColumn Field="@(nameof(cricketteam.NumberofPlayers))" />
+        <GridColumn Field="@(nameof(CricketTeam.Name))" />
+        <GridColumn Field="@(nameof(CricketTeam.NumberofPlayers))" />
     </GridColumns>
 </TelerikGrid>
 <TelerikButton>
@@ -17,35 +17,31 @@
 
 
 @code {
-    public class cricketteam
-    {
-        public string Name { get; set; }
-        public string NumberofPlayers { get; set; }
-    }
 
-    public List<cricketteam> theData = new List<cricketteam>
+
+    public List<CricketTeam> theData = new List<CricketTeam>
     {
-        new cricketteam
+        new CricketTeam
         {
             Name = "Nec",
             NumberofPlayers = "2",
         },
-        new cricketteam
+        new CricketTeam
         {
             Name = "Raas",
             NumberofPlayers = "4"
         },
-        new cricketteam
+        new CricketTeam
         {
             Name = "Apollo",
             NumberofPlayers = "10"
         },
-         new cricketteam
+         new CricketTeam
         {
             Name = "Registry",
             NumberofPlayers = "20"
         },
-         new cricketteam
+         new CricketTeam
         {
             Name = "Test",
             NumberofPlayers = "203"
