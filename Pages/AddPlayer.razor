@@ -17,7 +17,7 @@
     }
     else
     {
-      <TelerikForm Model="newPlayer"
+        <TelerikForm Model="newPlayer"
                  @ref="@FormRef"
                  OnInvalidSubmit="@HandleInvalidSubmit">
             <FormValidation>
@@ -25,11 +25,11 @@
             </FormValidation>
             <FormItems>
                 <FormItem LabelText=" Name" Field="@(nameof(addplayer.Name))" />
-                <FormItem Field="@(nameof(addplayer.DateofBirth))"/>
+                <FormItem Field="@(nameof(addplayer.DateofBirth))" />
                 <FormItem LabelText="Position" Field="@(nameof(addplayer.Position))" />
                 <labeltext>Captain :</labeltext>
-                <TelerikRadioGroup Data="@value"
-                                   @bind-Value="@SelectedValue"></TelerikRadioGroup>
+                <TelerikRadioGroup Data="@value" 
+                               @bind-Value="@SelectedValue"></TelerikRadioGroup>
 
                 <FormItem LabelText="BattingOrder" Field="@(nameof(addplayer.BattingOrder))" />
                 <FormItem LabelText="BowlingStyle" Field="@(nameof(addplayer.BowlingStyle))" />
@@ -37,22 +37,22 @@
             </FormItems>
             <FormButtons>
                 <input type="submit" value="Save" @onclick="HandleValidSubmit" class="btn btn-primary" />
-@*                <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
-*@                @*<TelerikButton ButtonType="ButtonType.Button" OnClick="@OnClear">Reset</TelerikButton>*@
+                @*                <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+            *@                @*<TelerikButton ButtonType="ButtonType.Button" OnClick="@OnClear">Reset</TelerikButton>*@
             </FormButtons>
         </TelerikForm>
 
-       @* <TelerikGrid Data="@forecasts" Height="150px" Width="800px">
-            <GridColumns>
-                <GridColumn Field="@(nameof(addplayer.Name))" />
-                <GridColumn Field="@(nameof(addplayer.DateofBirth))" />
-                <GridColumn Field="@(nameof(addplayer.Position))" />
-                <GridColumn Field="@(nameof(addplayer.Captain))" />
-                <GridColumn Field="@(nameof(addplayer.BattingOrder))" />
-                <GridColumn Field="@(nameof(addplayer.BowlingStyle))" />
-                <GridColumn Field="@(nameof(addplayer.Rating))" />
-            </GridColumns>
-        </TelerikGrid>*@
+        @* <TelerikGrid Data="@forecasts" Height="150px" Width="800px">
+    <GridColumns>
+    <GridColumn Field="@(nameof(addplayer.Name))" />
+    <GridColumn Field="@(nameof(addplayer.DateofBirth))" />
+    <GridColumn Field="@(nameof(addplayer.Position))" />
+    <GridColumn Field="@(nameof(addplayer.Captain))" />
+    <GridColumn Field="@(nameof(addplayer.BattingOrder))" />
+    <GridColumn Field="@(nameof(addplayer.BowlingStyle))" />
+    <GridColumn Field="@(nameof(addplayer.Rating))" />
+    </GridColumns>
+    </TelerikGrid>*@
     }
 </div>
 @code {
@@ -61,8 +61,9 @@
     protected override async Task OnInitializedAsync()
     {
         newPlayer = new addplayer();
-        Http.BaseAddress = new Uri("https://localhost:5001/");
-        var url = new Uri(Http.BaseAddress+"JsonData/aplayer.json");
+        if (Http.BaseAddress == null)
+            Http.BaseAddress = new Uri("https://localhost:5001/");
+        var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
 
         var playerinfo = await Http.GetAsync(url);
         var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
@@ -123,7 +124,8 @@
 
     public void HandleValidSubmit()
     {
-        //Http.BaseAddress = new Uri("https://localhost:5001/");
+        if (Http.BaseAddress == null)
+            Http.BaseAddress = new Uri("https://localhost:5001/");
         var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
 
         string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
@@ -131,13 +133,13 @@
         var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
 
         jsonObj.Add(newPlayer);
-        
+
 
         var updatedJson = JsonConvert.SerializeObject(jsonObj);
 
         File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
 
-      
+
         //System.IO.File.AppendAllText("wwwroot/JsonData/aplayer.json", content);
 
     }

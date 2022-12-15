@@ -56,7 +56,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Http.BaseAddress = new Uri("https://localhost:5001/");
+        if (Http.BaseAddress == null)
+            Http.BaseAddress = new Uri("https://localhost:5001/");
+        //Http.BaseAddress = new Uri("https://localhost:5001/");
         var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
 
         var playerinfo = await Http.GetAsync(url);
