@@ -13,6 +13,8 @@ namespace CricketManager.Models
 
         [Required(ErrorMessage = "Contact Number only allows numbers")]
         public int Contact { get; set; }
+        [Required(ErrorMessage = "Contact Number only allows numbers")]
+        public string TeamName { get; set; }
 
 
     }

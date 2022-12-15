@@ -6,7 +6,7 @@
 @inject NavigationManager NavigationManager
 
 <h3>Edit Player</h3>
-
+<h3>@SubmitMessage</h3>
 <div class="demo-section">
     @if (ValidSubmit)
     {
@@ -76,6 +76,8 @@
     public EditContext TestEditContext { get; set; }
     public bool ValidSubmit { get; set; } = false;
 
+    public string SubmitMessage { get; set; }
+
     public addplayer editPlayer { get; set; } 
     public List<captainmodel> captain { get; set; } = new List<captainmodel>()
 {
@@ -99,13 +101,34 @@
 
     async void HandleValidSubmit()
     {
-        ValidSubmit = true;
+        if (Http.BaseAddress == null)
+            Http.BaseAddress = new Uri("https://localhost:5001/");
+        var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
 
-        await Task.Delay(2000);
+        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
 
-        ValidSubmit = false;
+        var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
 
-        StateHasChanged();
+        var player = jsonObj.Where(p => p.Name == Name).First();
+
+        player.Name = editPlayer.Name;
+        player.DateofBirth = editPlayer.DateofBirth;
+        player.Captain = editPlayer.Captain;
+        player.BattingOrder = editPlayer.BattingOrder;
+        player.BowlingStyle = editPlayer.BowlingStyle;
+        player.Rating = editPlayer.Rating;
+        player.Position = editPlayer.Position;
+        player.TeamName = editPlayer.TeamName;
+        var oldplayer = jsonObj.Where(p => p.Name == Name).First();
+        jsonObj.Remove(oldplayer);
+        jsonObj.Add(player);
+
+
+        var updatedJson = JsonConvert.SerializeObject(jsonObj);
+        
+        File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
+
+        SubmitMessage = "Existing Player Updated Successfully";
     }
 
     void HandleInvalidSubmit()

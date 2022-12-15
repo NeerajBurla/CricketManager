@@ -7,7 +7,15 @@
 
 <TelerikGrid Data="@theData" Height="150px" Width="800px">
     <GridColumns>
-        <GridColumn Field="@(nameof(CricketTeam.Name))" />
+        <GridColumn Field="@(nameof(CricketTeam.Name))">
+            <Template>
+                <a href="@($"/playerlist/{((context as CricketTeam).Name)}")">
+                    <span class="span-nav">
+                        @((context as CricketTeam).Name)
+                    </span>
+                </a>
+            </Template>
+        </GridColumn>
         <GridColumn Field="@(nameof(CricketTeam.NumberofPlayers))" />
     </GridColumns>
 </TelerikGrid>
@@ -28,12 +36,12 @@
         },
         new CricketTeam
         {
-            Name = "Raas",
+            Name = "WIPRO",
             NumberofPlayers = "4"
         },
         new CricketTeam
         {
-            Name = "Apollo",
+            Name = "TCS",
             NumberofPlayers = "10"
         },
          new CricketTeam
