@@ -1,8 +1,8 @@
-{
+[
   {
-     "Name" : "NEC",
-     "Manager" : "neeraj",
-     "Contact" :987867567785
+    "Name": "NEC",
+    "Manager": "neeraj",
+    "Contact": 987867567785
   },
   {
     "Name": "TCS",
@@ -14,4 +14,4 @@
     "Manager": "Sohail",
     "Contact": 98786567785
   }
-}
+]

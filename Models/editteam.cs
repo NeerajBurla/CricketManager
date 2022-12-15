@@ -2,7 +2,7 @@
 
 namespace CricketManager.Models
 {
-    public class editteam
+    public class EditTeam
     {
 
         [Required(ErrorMessage = "Name is mandatory and can be 30 chars")]

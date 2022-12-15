@@ -27,6 +27,8 @@ namespace CricketManager.Models
 
         [Required]
         public Rating? Rating { get; set; }
+        [Required]
+        public string TeamName { get; set; }
 
     }
 

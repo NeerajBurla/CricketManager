@@ -14,6 +14,7 @@ namespace CricketManager.Models
         [Required(ErrorMessage = "Contact Number only allows numbers")]
         public string Contact { get; set; }
 
+
     }
 }
 

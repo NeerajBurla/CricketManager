@@ -1,5 +1,6 @@
 ﻿@page "/editteam"
 @inject HttpClient Http
+@inject NavigationManager navigate
 
 <h3>Edit Team</h3>
 
@@ -20,7 +21,7 @@
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidation>
             <FormItems>
-                <FormItem Field="@nameof(addteam.Name)"></FormItem>@*<label for="Name" class="k-label k-form-label">Name*:</label>*@
+                <FormItem Field="@nameof(addteam.Name)"></FormItem>
                 <FormItem Field="@nameof(addteam.Manager)"></FormItem>
                 <FormItem Field="@nameof(addteam.Contact)"></FormItem>
             </FormItems>
@@ -31,7 +32,15 @@
 <div>
     <TelerikGrid Data="@theData" Height="150px" Width="800px">
             <GridColumns>
-                <GridColumn Field="@(nameof(addplayer.Name))" />
+                <GridColumn Field="@(nameof(addplayer.Name))">
+                    <Template>
+                    <a href="@($"/editplayer/{((context as addplayer).Name)}")">
+                        <span class="span-nav">
+                            @((context as addplayer).Name)
+                        </span>
+                    </a>
+                    </Template>
+                </GridColumn>
                 <GridColumn Field="@(nameof(addplayer.DateofBirth))" />
                 <GridColumn Field="@(nameof(addplayer.Position))" />
                 <GridColumn Field="@(nameof(addplayer.Captain))" />
@@ -40,9 +49,9 @@
         <TelerikButton>
         <a href="AddPlayer">Add New Player</a>
         </TelerikButton>
-    <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Warning)">Delete Team</TelerikButton>
+   @* <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Warning)">Delete Team</TelerikButton>*@
     <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
-    <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Secondary)">Cancel</TelerikButton>
+    <TelerikButton ButtonType="ButtonType.Reset" ThemeColor="@(ThemeConstants.Button.ThemeColor.Secondary)">Cancel</TelerikButton>
   
 </div>
 @code {

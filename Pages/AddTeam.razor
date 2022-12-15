@@ -1,5 +1,5 @@
 ﻿@page "/addteam"
-
+@inject HttpClient Http
 @using CricketManager.Models
 @inject NavigationManager NavigationManager
 
@@ -35,13 +35,15 @@
 </div>
 
 @code {
-    public addteam addteam { get; set; } = new addteam()
-        {
-            Name = "Nec",
-            Manager = "neeraj",
-            Contact = "987867567785",
-        };
-   
+    public addteam addteam { get; set; } = new addteam();
+    //    {
+    //        TeamName = "Nec",
+    //        Manager = "neeraj",
+    //        Contact = "987867567785",
+    //    };
+
+
+    
     public bool ValidSubmit { get; set; } = false;
 
     async void HandleValidSubmit()

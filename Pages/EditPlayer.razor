@@ -1,10 +1,11 @@
-﻿@page "/editplayer"
+﻿@page "/editplayer/{name}"
+@inject HttpClient Http
 
 
 @using CricketManager.Models
 @inject NavigationManager NavigationManager
 
-<h3>Add Player</h3>
+<h3>Edit Player</h3>
 
 <div class="demo-section">
     @if (ValidSubmit)
@@ -15,7 +16,7 @@
     }
     else
     {
-        <TelerikForm EditContext="@TestEditContext"
+        <TelerikForm Model="@editPlayer"
                  @ref="@FormRef"
                  OnValidSubmit="@HandleValidSubmit"
                  OnInvalidSubmit="@HandleInvalidSubmit">
@@ -30,20 +31,23 @@
                 <labeltext>Captain :</labeltext>
                 <TelerikRadioGroup Data="@value"
                                @bind-Value="@SelectedValue"></TelerikRadioGroup>
-
+                <TelerikDropDownList Data="myDdlData" TextField="Name" ValueField="Name" @bind-Value="@editPlayer.TeamName">
+                </TelerikDropDownList>
                 <FormItem LabelText="BowlingStyle" Field="@(nameof(addplayer.BowlingStyle))" />
                 <FormItem LabelText="Rating" Field="@(nameof(addplayer.Rating))" />
             </FormItems>
             <FormButtons>
                 <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Warning)">Delete Team</TelerikButton>
                 <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
-                <TelerikButton ButtonType="ButtonType.Button" OnClick="@OnClear">Reset</TelerikButton>
+                @*<TelerikButton ButtonType="ButtonType.Button" OnClick="@OnClear">Reset</TelerikButton>*@
             </FormButtons>
         </TelerikForm>
     }
 </div>
 @code {
     public IsCaptain SelectedValue { get; set; } = IsCaptain.No;
+
+    public IEnumerable<addteam> myDdlData { get; set; }
     public List<Captain> value { get; set; } = new List<Captain>()
     {
         new Captain() { Text = "Yes", Value = IsCaptain.Yes },
@@ -67,29 +71,30 @@
     }
     public TelerikForm FormRef { get; set; }
 
+    [Parameter]
+    public string Name { get; set; }
     public EditContext TestEditContext { get; set; }
     public bool ValidSubmit { get; set; } = false;
 
-    public addplayer TestApplication { get; set; } = new addplayer();
-
+    public addplayer editPlayer { get; set; } 
     public List<captainmodel> captain { get; set; } = new List<captainmodel>()
 {
         new captainmodel() { Value = 1, Text = "Yes" },
         new captainmodel() { Value = 2, Text = "No" },
     };
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        TestEditContext = new EditContext(TestApplication);
-        base.OnInitialized();
-    }
+        editPlayer = new addplayer();
+        myDdlData = new List<addteam>();
+        if (Http.BaseAddress == null)
+            Http.BaseAddress = new Uri("https://localhost:5001/");
+        //Http.BaseAddress = new Uri("https://localhost:5001/");
+        var url = new Uri(Http.BaseAddress + "JsonData/AddTeam.json");
 
-    private void OnClear()
-    {
-        TestApplication = new addplayer();
-
-        TestEditContext = new EditContext(TestApplication);
-        TestEditContext.EnableDataAnnotationsValidation();
+        var playerinfo = await Http.GetAsync(url);
+        var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
+        myDdlData = JsonConvert.DeserializeObject<addteam[]>(playerResponseInfo);
     }
 
     async void HandleValidSubmit()
@@ -107,4 +112,21 @@
     {
         ValidSubmit = false;
     }
-}
+
+    protected override void OnParametersSet()
+    {
+        editPlayer = new addplayer();
+        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
+        List<addplayer> players = JsonConvert.DeserializeObject<List<addplayer>>(json);
+
+        addplayer player = players.FirstOrDefault(p => p.Name == Name);
+
+        editPlayer = player;
+
+        //using (var response = await httpClient.GetAsync("https://localhost:44337/api/AuthorApi/" + Id))
+            //{
+            //    string apiResponse = await response.Content.ReadAsStringAsync();
+            //    Author = JsonConvert.DeserializeObject<AuthorModel>(apiResponse);
+            //}
+    }
+    }
