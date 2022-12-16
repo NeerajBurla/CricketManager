@@ -5,9 +5,17 @@
 <h3>Cricket Teams</h3>
 
 
-<TelerikGrid Data="@theData" Height="150px" Width="800px">
+<TelerikGrid Data="@theData" Height="500px" Width="1000px">
     <GridColumns>
-        <GridColumn Field="@(nameof(CricketTeam.Name))">
+        <GridColumn Field="@(nameof(CricketTeam.Logo))">
+            <Template>
+                @{
+                    var employee = context as CricketTeam;
+                    <img class="rounded" src="@($"/neclogo.png")" alt="Team Logo" />
+                }
+            </Template>
+        </GridColumn>
+        <GridColumn Field="@(nameof(CricketTeam.Name))" Title=" Team Name">
             <Template>
                 <a href="@($"/playerlist/{((context as CricketTeam).Name)}")">
                     <span class="span-nav">
