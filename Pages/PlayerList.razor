@@ -1,0 +1,80 @@
+﻿@page "/playerlist/{name}"
+
+@inject HttpClient Http
+@inject NavigationManager navigate
+
+<h3>Player List</h3>
+
+
+<div>
+    <TelerikGrid Data="@theData" Height="150px" Width="800px">
+        <GridColumns>
+            <GridColumn Field="@(nameof(addplayer.Name))">
+                <Template>
+                    <a href="@($"/editplayer/{((context as addplayer).Name)}")">
+                        <span class="span-nav">
+                            @((context as addplayer).Name)
+                        </span>
+                    </a>
+                </Template>
+            </GridColumn>
+            <GridColumn Field="@(nameof(addplayer.DateofBirth))" />
+            <GridColumn Field="@(nameof(addplayer.Position))" />
+            <GridColumn Field="@(nameof(addplayer.Captain))" />
+            <GridColumn Field="@(nameof(addplayer.TeamName))" />
+        </GridColumns>
+    </TelerikGrid>
+    <TelerikButton>
+        <a href="AddPlayer">Add New Player</a>
+    </TelerikButton>
+    @* <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Warning)">Delete Team</TelerikButton>*@
+   @* <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+    <TelerikButton ButtonType="ButtonType.Reset" ThemeColor="@(ThemeConstants.Button.ThemeColor.Secondary)">Cancel</TelerikButton>*@
+
+</div>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    if (Http.BaseAddress == null)
+    //        Http.BaseAddress = new Uri("https://localhost:5001/");
+    //    //Http.BaseAddress = new Uri("https://localhost:5001/");
+    //    var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
+
+    //    var playerinfo = await Http.GetAsync(url);
+    //    var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
+
+
+    //    theData = JsonConvert.DeserializeObject<addplayer[]>(playerResponseInfo);
+    //}
+
+    //async void HandleValidSubmit()
+    //{
+    //    ValidSubmit = true;
+
+    //    await Task.Delay(2000);
+
+    //    ValidSubmit = false;
+
+    //    StateHasChanged();
+    //}
+
+    //void HandleInvalidSubmit()
+    //{
+    //    ValidSubmit = false;
+    //}
+
+    public addplayer[] theData;
+
+    protected override void OnParametersSet()
+    {
+        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
+        List<addplayer> players = JsonConvert.DeserializeObject<List<addplayer>>(json);
+
+        addplayer[] player = players.Where(p => p.TeamName == Name).ToArray();
+
+        theData = player;
+    }
+}
