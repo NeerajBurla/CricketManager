@@ -1,25 +1,28 @@
 ﻿@page "/"
 
-<h1></h1>
+@*<h1><br />Welcome to your Cricket Manager</h1>*@
 
-Welcome to your Cricket Manager.
+
 <br />
 
 @*<TelerikButton OnClick="@SayHelloHandler" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Say Hello</TelerikButton>*@
 
 <br />
+
+
 <TelerikButton>
+    <img src="/cricket.jpg" asp-append-version="true" width="900px"/>
 <a href="CricketTeams">View Cricket Teams</a>
 </TelerikButton>
 
-@helloString
+@*@helloString*@
 
 @code {
-    MarkupString helloString;
+    //MarkupString helloString;
 
-    void SayHelloHandler()
-    {
-        string msg = string.Format("Hello from <strong>Telerik Blazor</strong> at {0}.<br /> Now you can use C# to write front-end!", DateTime.Now);
-        helloString = new MarkupString(msg);
-    }
+    //void SayHelloHandler()
+    //{
+    //    string msg = string.Format("Hello from <strong>Telerik Blazor</strong> at {0}.<br /> Now you can use C# to write front-end!", DateTime.Now);
+    //    helloString = new MarkupString(msg);
+    //}
 }

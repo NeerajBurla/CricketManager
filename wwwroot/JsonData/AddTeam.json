@@ -1,17 +1,27 @@
 [
   {
-    "Name": "NEC",
-    "Manager": "neeraj",
-    "Contact": 987867567785
+    "Name": "NEC"
+    //"Manager": "neeraj",
+    //"Contact": 987867567785
   },
   {
-    "Name": "TCS",
-    "Manager": "Amol",
-    "Contact": 987867567785
+    "Name": "CSK"
+    //"Manager": "mol",
+    //"Contact": 987867567785
   },
   {
-    "Name": "WIPRO",
-    "Manager": "Sohail",
-    "Contact": 98786567785
+    "Name": "MI"
+    //"Manager": "Sohail",
+    //"Contact": 98786567785
+  },
+  {
+    "Name": "KKR"
+    //"Manager": "Sohail",
+    //"Contact": 98786567785
+  },
+  {
+    "Name": "RCB"
+    //"Manager": "Sohail",
+    //"Contact": 98786567785
   }
 ]
