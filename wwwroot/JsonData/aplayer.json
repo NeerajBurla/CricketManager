@@ -83,10 +83,30 @@
     "Name": "Neeraj Burla",
     "DateofBirth": "22",
     "Position": 1,
+    "Captain": "No",
+    "BattingOrder": 1,
+    "BowlingStyle": 0,
+    "Rating": 1,
+    "TeamName": "NEC"
+  },
+  {
+    "Name": "Neeraj Burla",
+    "DateofBirth": "22",
+    "Position": 0,
     "Captain": "Yes",
     "BattingOrder": 1,
     "BowlingStyle": 0,
     "Rating": 0,
+    "TeamName": "NEC"
+  },
+  {
+    "Name": "Ruba",
+    "DateofBirth": "21",
+    "Position": 1,
+    "Captain": "No",
+    "BattingOrder": 2,
+    "BowlingStyle": 0,
+    "Rating": 1,
     "TeamName": "NEC"
   }
 ]
