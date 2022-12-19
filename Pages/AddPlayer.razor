@@ -24,9 +24,13 @@
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidation>
             <FormItems>
+                <form action="/action_page.php">
+                    <input type="file" id="myFile" name="filename">
+                </form>
                 <FormItem LabelText=" Name" Field="@(nameof(addplayer.Name))" />
                 <FormItem Field="@(nameof(addplayer.DateofBirth))" />
                 <FormItem LabelText="Position" Field="@(nameof(addplayer.Position))" />
+                
                 
                 <labeltext>Captain :</labeltext>
                 <div class="form-control" style="border:none">

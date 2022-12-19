@@ -9,6 +9,9 @@
     <GridColumns>
         <GridColumn Field="@(nameof(CricketTeam.Logo))">
             <Template>
+                @*<form action="/action_page.php">
+                    <input type="file" id="myFile" name="filename">
+                </form>*@
                 @{
                     var employee = context as CricketTeam;
                     <img class="rounded" src="@($"/neclogo.png")" alt="Team Logo" />

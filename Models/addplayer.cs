@@ -13,6 +13,7 @@ namespace CricketManager.Models
 
         [Required]
         public Position? Position { get; set; }
+        public string Teamlogo { get; set; }
 
         [Required]
         public string Captain { get; set; }
