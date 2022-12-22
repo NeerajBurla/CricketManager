@@ -4,7 +4,7 @@
 
 <h3>Edit Team</h3>
 
-<div class="demo-section">
+<div class="demo-section k-form k-form-vertical">
     @if (ValidSubmit)
     {
         <div class="demo-alert demo-alert-success" role="alert">
@@ -16,7 +16,8 @@
     {
         <TelerikForm Model="@addteam"
                  OnValidSubmit="@HandleValidSubmit"
-                 OnInvalidSubmit="@HandleInvalidSubmit" >
+                 OnInvalidSubmit="@HandleInvalidSubmit">
+         
             <FormValidation>
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidation>
@@ -44,8 +45,8 @@
                 <GridColumn Field="@(nameof(addplayer.DateofBirth))" />
                 <GridColumn Field="@(nameof(addplayer.Position))" />
                 <GridColumn Field="@(nameof(addplayer.Captain))" />
-                <GridColumn Field="@(nameof(addplayer.TeamName))" /> 
-            </GridColumns>
+                <GridColumn Field="@(nameof(addplayer.TeamName))" />
+        </GridColumns>
     </TelerikGrid>
         <TelerikButton>
         <a href="AddPlayer">Add New Player</a>

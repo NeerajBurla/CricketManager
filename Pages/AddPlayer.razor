@@ -7,7 +7,7 @@
 @inject HttpClient Http
 
 <h3>Add Player</h3>
-<h3 class="alert-success">@SubmitMessage</h3>
+<h3 class="alert-success k-form k-form-vertical">@SubmitMessage</h3>
 <div class="demo-section">
     @if (ValidSubmit)
     {
@@ -24,9 +24,19 @@
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidation>
             <FormItems>
-                <form action="/action_page.php">
+                <h6 class="kd-demo-heading">Upload Logo</h6>
+                <div class="k-form-field">
+                    <div class="k-form-field-wrap">
+                        <TelerikUpload SaveUrl="@SaveUrl"
+                                   RemoveUrl="@RemoveUrl"
+                                   AllowedExtensions="@(new List<string>() { ".gif", ".jpg", ".png" })">
+                        </TelerikUpload>
+                        <div class="k-form-hint">You can only upload <strong> GIF</strong>, <strong> JPG</strong>, <strong> PNG</strong> files.</div>
+                    </div>
+                </div>
+               @* <form action="/action_page.php">
                     <input type="file" id="myFile" name="filename">
-                </form>
+                </form>*@
                 <FormItem LabelText=" Name" Field="@(nameof(addplayer.Name))" />
                 <FormItem Field="@(nameof(addplayer.DateofBirth))" />
                 <FormItem LabelText="Position" Field="@(nameof(addplayer.Position))" />
@@ -69,6 +79,12 @@
     }
 </div>
 @code {
+    public string SaveUrl => ToAbsoluteUrl("api/upload/save");
+    public string RemoveUrl => ToAbsoluteUrl("api/upload/remove");
+    public string ToAbsoluteUrl(string url)
+    {
+        return $"{NavigationManager.BaseUri}{url}";
+    }
     private addplayer[] forecasts;
 
     public string Selectedvalue { get; set; } = "Select team";

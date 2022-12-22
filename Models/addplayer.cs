@@ -38,6 +38,7 @@ namespace CricketManager.Models
         Batter,
         Bowler,
         Wicketkeeper,
+        AllRounder,
     }
    
     public enum BowlingStyle

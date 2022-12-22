@@ -66,17 +66,6 @@
     "TeamName": "NEC"
   },
   {
-    "Name": "Amol mane",
-    "DateofBirth": "21",
-    "Position": null,
-    "Teamlogo": null,
-    "Captain": "Yes",
-    "BattingOrder": 1,
-    "BowlingStyle": 1,
-    "Rating": 2,
-    "TeamName": "CSK"
-  },
-  {
     "Name": "Rohit",
     "DateofBirth": "22",
     "Position": 0,
@@ -112,6 +101,17 @@
   {
     "Name": "Neeraj Burla",
     "DateofBirth": "22",
+    "Position": 0,
+    "Teamlogo": null,
+    "Captain": "Yes",
+    "BattingOrder": 1,
+    "BowlingStyle": 0,
+    "Rating": 0,
+    "TeamName": "NEC"
+  },
+  {
+    "Name": "Neeraj Burla",
+    "DateofBirth": "21",
     "Position": 0,
     "Teamlogo": null,
     "Captain": "Yes",
