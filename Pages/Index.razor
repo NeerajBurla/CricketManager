@@ -1,28 +1,39 @@
 ﻿@page "/"
-
-@*<h1><br />Welcome to your Cricket Manager</h1>*@
-
-
-<br />
-
-@*<TelerikButton OnClick="@SayHelloHandler" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Say Hello</TelerikButton>*@
-
-<br />
+@inject HttpClient Http
 
 
-<TelerikButton>
-    <img src="/cricket.jpg" asp-append-version="true" width="900px"/>
-<a href="CricketTeams">View Cricket Teams</a>
-</TelerikButton>
+<h2 class="text-center" style="font-family:Papyrus">🏏Cricket Team Management🏏</h2>
 
+<div class="container" style="padding:20px;margin:40px;display:flex;flex-wrap:wrap;text-align:center">
+
+    @foreach (var item in theData)
+    {
+        <a href="@($"/playerlist/{(item.Name)}")" style="text-decoration:none">
+            <TelerikCard Width="200px">
+            <img class="rounded" src="@(item.Logo)" alt="Team Logo" style="padding:20px;" />
+                <p>@item.Manager</p>
+                <p>@item.Name</p>
+            </TelerikCard>
+        </a>
+    }
+</div>
+    
 @*@helloString*@
 
 @code {
-    //MarkupString helloString;
+    public List<CricketTeam> theData;
+    protected async override Task OnInitializedAsync()
+    {
+        theData = new List<CricketTeam>();
+        if (Http.BaseAddress == null)
+            Http.BaseAddress = new Uri("https://localhost:5001/");
+        //Http.BaseAddress = new Uri("https://localhost:5001/");
+        var url = new Uri(Http.BaseAddress + "JsonData/AddTeam.json");
 
-    //void SayHelloHandler()
-    //{
-    //    string msg = string.Format("Hello from <strong>Telerik Blazor</strong> at {0}.<br /> Now you can use C# to write front-end!", DateTime.Now);
-    //    helloString = new MarkupString(msg);
-    //}
+        var playerinfo = await Http.GetAsync(url);
+        var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
+
+        theData = JsonConvert.DeserializeObject<List<CricketTeam>>(playerResponseInfo);
+    }
+    
 }

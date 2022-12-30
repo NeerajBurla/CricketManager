@@ -2,12 +2,26 @@
 
 @inject HttpClient Http
 @inject NavigationManager navigate
+@inject IJSRuntime JsRuntime
 
 <h3>Player List</h3>
 
+<div class="demo-container mb-md">
+    <label class="demo-spacing">File extension:</label>
+    <TelerikDropDownList Data="@Formats" @bind-Value="@SelectedFormat" Width="140px">
+        <DropDownListSettings>
+            <DropDownListPopupSettings Height="auto"></DropDownListPopupSettings>
+        </DropDownListSettings>
+    </TelerikDropDownList>
 
+    <TelerikButton Icon="save" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)" OnClick="@ExportHandler"
+                   Class="demo-spacing demo-button">Generate</TelerikButton>
+</div>
 <div>
-    <TelerikGrid Data="@theData" Height="500px" Width="800px">
+    <TelerikGrid Data="@theData" EditMode="@GridEditMode.Inline" OnCreate="CreateItem" OnUpdate="@MyOnUpdateHandler" ConfirmDelete="true" OnDelete="@DeleteHandler" Pageable="true" PageSize="5" Height="500px">
+        <GridToolBar>
+            <GridCommandButton Command="Add" Icon="add">Add New Player</GridCommandButton>
+        </GridToolBar>
         <GridColumns>
             <GridColumn Field="@(nameof(addplayer.Name))">
                 <Template>
@@ -21,60 +35,312 @@
             <GridColumn Field="@(nameof(addplayer.DateofBirth))" />
             <GridColumn Field="@(nameof(addplayer.Position))" />
             <GridColumn Field="@(nameof(addplayer.Captain))" />
+            <GridColumn Field="@(nameof(addplayer.BattingOrder))" />
+            <GridColumn Field="@(nameof(addplayer.BowlingStyle))" />
+            <GridColumn Field="@(nameof(addplayer.Rating))" />
             <GridColumn Field="@(nameof(addplayer.TeamName))" />
+            <GridCommandColumn>
+                <div class="row" style="padding:10px">
+                <GridCommandButton Command="Edit" Icon="edit">Edit</GridCommandButton>
+                <GridCommandButton Command="Delete" Icon="delete">Delete</GridCommandButton>
+                </div>
+                <GridCommandButton Command="Save" Icon="save" ShowInEdit="true">Update</GridCommandButton>
+                <GridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                
+            </GridCommandColumn>
         </GridColumns>
-    </TelerikGrid>
-    @*<TelerikButton>
-        <a href="AddPlayer">Add New Player</a>
-    </TelerikButton>*@
-    @* <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Warning)">Delete Team</TelerikButton>*@
+        <NoDataTemplate>
+            <a href="@($"addplayer")" class="btn btn-primary">Add New Player</a>
+        </NoDataTemplate>
+     </TelerikGrid>
+            
+
+
+      @*@<TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Warning)">Delete Team</TelerikButton>*@
    @* <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
     <TelerikButton ButtonType="ButtonType.Reset" ThemeColor="@(ThemeConstants.Button.ThemeColor.Secondary)">Cancel</TelerikButton>*@
-
 </div>
 
 @code {
+
     [Parameter]
     public string Name { get; set; }
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    if (Http.BaseAddress == null)
-    //        Http.BaseAddress = new Uri("https://localhost:5001/");
-    //    //Http.BaseAddress = new Uri("https://localhost:5001/");
-    //    var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
 
-    //    var playerinfo = await Http.GetAsync(url);
-    //    var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
-
-
-    //    theData = JsonConvert.DeserializeObject<addplayer[]>(playerResponseInfo);
-    //}
-
-    //async void HandleValidSubmit()
-    //{
-    //    ValidSubmit = true;
-
-    //    await Task.Delay(2000);
-
-    //    ValidSubmit = false;
-
-    //    StateHasChanged();
-    //}
-
-    //void HandleInvalidSubmit()
-    //{
-    //    ValidSubmit = false;
-    //}
-
-    public addplayer[] theData;
+    public List<addplayer> theData = new List<addplayer>();
 
     protected override void OnParametersSet()
     {
         string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
         List<addplayer> players = JsonConvert.DeserializeObject<List<addplayer>>(json);
 
-        addplayer[] player = players.Where(p => p.TeamName == Name).ToArray();
+        List<addplayer> player = players.Where(p => p.TeamName == Name).ToList();
 
         theData = player;
     }
+
+    private async void CreateItem(GridCommandEventArgs args)
+    {
+        CreatePlayer((addplayer)args.Item);
+        await GetGridData();
+    }
+
+
+    private async Task MyOnUpdateHandler(GridCommandEventArgs args)
+    {
+        addplayer editPlayer = args.Item as addplayer;
+
+        await Update(editPlayer);
+
+        await GetGridData();
+
+        //var updatedJson = JsonConvert.SerializeObject(jsonObj);
+
+        //File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
+
+    }
+
+    async Task DeleteHandler(GridCommandEventArgs args)
+    {
+        addplayer item = (addplayer)args.Item;
+
+        await Delete(item);
+
+        await GetGridData();
+
+    }
+
+    public void CreatePlayer(addplayer createPlayer)
+    {
+        if (Http.BaseAddress == null)
+            Http.BaseAddress = new Uri("https://localhost:5001/");
+        var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
+
+        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
+
+        var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
+
+        jsonObj.Add(createPlayer);
+
+
+        var updatedJson = JsonConvert.SerializeObject(jsonObj);
+
+        File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
+
+    }
+
+    async Task GetGridData()
+    {
+        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
+        List<addplayer> players = JsonConvert.DeserializeObject<List<addplayer>>(json);
+
+        List<addplayer> player = players.Where(p => p.TeamName == Name).ToList();
+
+        theData = player;
+    }
+
+
+    public async Task Update(addplayer itemToUpdate)
+    {
+        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
+
+        var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
+
+        var player = jsonObj.Where(p => p.Name == itemToUpdate.Name).First();
+
+        player.Name = itemToUpdate.Name;
+        player.DateofBirth = itemToUpdate.DateofBirth;
+        player.Captain = itemToUpdate.Captain;
+        player.BattingOrder = itemToUpdate.BattingOrder;
+        player.BowlingStyle = itemToUpdate.BowlingStyle;
+        player.Rating = itemToUpdate.Rating;
+        player.Position = itemToUpdate.Position;
+        player.TeamName = itemToUpdate.TeamName;
+
+        var oldplayer = jsonObj.Where(p => p.Name == itemToUpdate.Name).First();
+
+        jsonObj.Remove(oldplayer);
+        jsonObj.Add(player);
+
+
+        var updatedJson = JsonConvert.SerializeObject(jsonObj);
+
+        File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
+    }
+
+    public async Task Delete(addplayer itemTodelete)
+    {
+        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
+
+        var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
+
+        var player = jsonObj.Where(p => p.Name == itemTodelete.Name).First();
+
+        jsonObj.Remove(player);
+
+        var updatedJson = JsonConvert.SerializeObject(jsonObj);
+
+        File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
+
+    }
+
+    Hashtable table = new Hashtable();
+    string SelectedFormat = "CSV";
+    string[] Formats = {"CSV", "TXT", "PDF" };
+
+    readonly int IndexColumnProductID = 0;
+    readonly int IndexColumnProductName = 1;
+    readonly int IndexColumnUnitPrice = 2;
+    readonly int IndexColumnUnitsInStock = 3;
+    readonly int IndexColumnUnitsOnOrder = 4;
+    readonly int IndexRowItemStart = 1;
+
+    readonly string EnUSCultureAccountFormatString = "_($ #,##0.00_);_($ (#,##0.00);_(@_)";
+    readonly ThemableColor InvoiceBackground = ThemableColor.FromArgb(255, 44, 62, 80);
+    readonly ThemableColor InvoiceHeaderForeground = ThemableColor.FromArgb(255, 255, 255, 255);
+
+    void ExportHandler()
+    {
+        byte[] fileData = GenerateDocument();
+        DemoFileExporter.Save(JsRuntime, fileData, GetMimeType(), "TelerikSpreadProcessing-Generated" + GetFileExtention());
+    }
+
+
+    string GetFileExtention()
+    {
+        return "." + SelectedFormat.ToLowerInvariant();
+    }
+
+    string GetMimeType()
+    {
+        string mimeType = String.Empty;
+        switch (GetFileExtention())
+        {
+            case ".pdf": mimeType = "application/pdf"; break;
+            case ".txt": mimeType = "text/plain"; break;
+            case ".csv": mimeType = "text/csv"; break;
+        }
+        return mimeType;
+    }
+
+    IWorkbookFormatProvider GetFormatProvider(string extension)
+    {
+        IWorkbookFormatProvider formatProvider;
+        switch (extension)
+        {
+            case ".csv":
+                formatProvider = new CsvFormatProvider();
+                ((CsvFormatProvider)formatProvider).Settings.HasHeaderRow = true;
+                break;
+            case ".txt":
+                formatProvider = new TxtFormatProvider();
+                break;
+            case ".pdf":
+                formatProvider = new PdfFormatProvider();
+                break;
+            default:
+                formatProvider = null;
+                break;
+        }
+
+        return formatProvider;
+    }
+
+    Workbook CreateWorkbook()
+    {
+        Workbook workbook = new Workbook();
+        workbook.Sheets.Add(SheetType.Worksheet);
+
+        Worksheet worksheet = workbook.ActiveWorksheet;
+
+        this.PrepareInvoiceDocument(worksheet, theData.Count());
+
+        int currentRow = IndexRowItemStart + 1;
+        foreach (var item in theData)
+        {
+            worksheet.Cells[currentRow, 0].SetValue(item.Name);
+            worksheet.Cells[currentRow, 1].SetValue(item.DateofBirth);
+            worksheet.Cells[currentRow, 2].SetValue(item.Position.ToString());
+            worksheet.Cells[currentRow, 3].SetValue(item.BattingOrder.ToString());
+            worksheet.Cells[currentRow, 4].SetValue(item.BowlingStyle.ToString());
+            worksheet.Cells[currentRow, 5].SetValue(item.Captain.ToString());
+            worksheet.Cells[currentRow, 6].SetValue(item.TeamName.ToString());
+
+            currentRow++;
+        }
+
+        for (int i = 0; i < worksheet.UsedCellRange.ColumnCount; i++)
+        {
+            worksheet.Columns[i].AutoFitWidth();
+        }
+
+        return workbook;
+    }
+
+    void PrepareInvoiceDocument(Worksheet worksheet, int itemsCount)
+    {
+        int lastItemIndexRow = IndexRowItemStart + itemsCount;
+
+        CellIndex firstRowFirstCellIndex = new CellIndex(0, 0);
+        CellIndex firstRowLastCellIndex = new CellIndex(0, 4);
+        CellIndex lastRowFirstCellIndex = new CellIndex(lastItemIndexRow + 1, 0);
+        CellIndex lastRowLastCellIndex = new CellIndex(lastItemIndexRow + 1, 6);
+        worksheet.Cells[firstRowFirstCellIndex, firstRowLastCellIndex].MergeAcross();
+        CellBorder border = new CellBorder(CellBorderStyle.DashDot, InvoiceBackground);
+        worksheet.Cells[firstRowFirstCellIndex, lastRowLastCellIndex].SetBorders(new CellBorders(border, border, border, border, null, null, null, null));
+        worksheet.Cells[lastRowFirstCellIndex, lastRowLastCellIndex].SetBorders(new CellBorders(border, border, border, border, null, null, null, null));
+        worksheet.Cells[firstRowFirstCellIndex].SetValue("INVOICE");
+        worksheet.Cells[firstRowFirstCellIndex].SetFontSize(20);
+
+        worksheet.Cells[IndexRowItemStart, 0].SetValue("Name");
+        worksheet.Cells[IndexRowItemStart, 1].SetValue("Age");
+        worksheet.Cells[IndexRowItemStart, 2].SetValue("Position");
+        worksheet.Cells[IndexRowItemStart, 2].SetHorizontalAlignment(RadHorizontalAlignment.Right);
+        worksheet.Cells[IndexRowItemStart, 3].SetValue("Batting Order");
+        worksheet.Cells[IndexRowItemStart, 3].SetHorizontalAlignment(RadHorizontalAlignment.Right);
+        worksheet.Cells[IndexRowItemStart, 4].SetValue("Bowling Style");
+        worksheet.Cells[IndexRowItemStart, 4].SetHorizontalAlignment(RadHorizontalAlignment.Right);
+        worksheet.Cells[IndexRowItemStart, 5].SetValue("Captain");
+        worksheet.Cells[IndexRowItemStart, 5].SetHorizontalAlignment(RadHorizontalAlignment.Right);
+        worksheet.Cells[IndexRowItemStart, 6].SetValue("Team Name");
+        worksheet.Cells[IndexRowItemStart, 6].SetHorizontalAlignment(RadHorizontalAlignment.Right);
+
+        worksheet.Cells[IndexRowItemStart, 0, IndexRowItemStart, 6].SetFill
+        (new GradientFill(GradientType.Horizontal, InvoiceBackground, InvoiceBackground));
+        worksheet.Cells[IndexRowItemStart, 0, IndexRowItemStart, 6].SetForeColor(InvoiceHeaderForeground);
+        worksheet.Cells[IndexRowItemStart, 2, lastItemIndexRow, 2].SetFormat(
+        new CellValueFormat(EnUSCultureAccountFormatString));
+        worksheet.Cells[IndexRowItemStart, IndexColumnUnitsOnOrder, lastItemIndexRow, IndexColumnUnitsOnOrder].SetFormat(
+        new CellValueFormat(EnUSCultureAccountFormatString));
+
+
+        string unitsOnOrderColumnCellRange = NameConverter.ConvertCellRangeToName(
+        new CellIndex(IndexRowItemStart + 1, IndexColumnUnitsOnOrder),
+        new CellIndex(lastItemIndexRow, IndexColumnUnitsOnOrder));
+    }
+
+    byte[] GenerateDocument()
+    {
+        IWorkbookFormatProvider formatProvider = GetFormatProvider(GetFileExtention());
+        if (formatProvider == null)
+        {
+            return null;
+        }
+
+        Workbook workbook = this.CreateWorkbook();
+        byte[] renderedBytes = null;
+
+        using (MemoryStream ms = new MemoryStream())
+        {
+            formatProvider.Export(workbook, ms);
+            renderedBytes = ms.ToArray();
+        }
+
+        return renderedBytes;
+    }
 }
+
+<style>
+    .demo-button {
+        width: 140px;
+    }
+</style>

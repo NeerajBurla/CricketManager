@@ -1,9 +1,10 @@
-﻿@page "/editteam"
+﻿@page "/editteam/{name}"
 @inject HttpClient Http
 @inject NavigationManager navigate
 
 <h3>Edit Team</h3>
 
+<h3 class="text-success">@SubmitMessage</h3>
 <div class="demo-section k-form k-form-vertical">
     @if (ValidSubmit)
     {
@@ -14,7 +15,7 @@
     }
     else
     {
-        <TelerikForm Model="@addteam"
+        <TelerikForm Model="@cricketeam"
                  OnValidSubmit="@HandleValidSubmit"
                  OnInvalidSubmit="@HandleInvalidSubmit">
          
@@ -22,11 +23,17 @@
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidation>
             <FormItems>
-                <FormItem Field="@nameof(addteam.Name)"></FormItem>
-                <FormItem Field="@nameof(addteam.Manager)"></FormItem>
-                <FormItem Field="@nameof(addteam.Contact)"></FormItem>
+                <label>Logo </label>
+                <TelerikFileSelect OnSelect="Filepath"
+                               AllowedExtensions="@( new List<string>() { ".png", ".jpeg" } )">
+                </TelerikFileSelect>
+                <FormItem Field="@nameof(CricketTeam.Name)"></FormItem>
+                <FormItem Field="@nameof(CricketTeam.Manager)"></FormItem>
+                <FormItem Field="@nameof(CricketTeam.Contact)"></FormItem>
             </FormItems>
-            <FormButtons></FormButtons>
+            <FormButtons>
+                <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+            </FormButtons>
         </TelerikForm>
     }
 </div>
@@ -57,16 +64,28 @@
   
 </div>
 @code {
-    public addteam addteam { get; set; } = new addteam()
+    public CricketTeam cricketeam;
+
+    public void Filepath(FileSelectEventArgs args)
+    {
+        foreach (var file in args.Files)
         {
-            Name = "Nec",
-            Manager = "xyz",
-            Contact = "987867567785",
-        };
+            FileName = file.Name;
+        }
+    }
+
+    [Parameter]
+    public string Name { get; set; }
+
+    public string FileName { get; set; }
+
+    public string SubmitMessage { get; set; }
+
     public bool ValidSubmit { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
+        cricketeam = new CricketTeam();
         if (Http.BaseAddress == null)
             Http.BaseAddress = new Uri("https://localhost:5001/");
         //Http.BaseAddress = new Uri("https://localhost:5001/");
@@ -79,15 +98,47 @@
         theData = JsonConvert.DeserializeObject<addplayer[]>(playerResponseInfo);
     }
 
+    protected async override Task OnParametersSetAsync()
+    {
+        
+        if (Http.BaseAddress == null)
+            Http.BaseAddress = new Uri("https://localhost:5001/");
+        //Http.BaseAddress = new Uri("https://localhost:5001/");
+        var json = File.ReadAllText("wwwroot/JsonData/AddTeam.json");
+
+        var team = JsonConvert.DeserializeObject<List<CricketTeam>>(json);
+
+        cricketeam = team.FirstOrDefault(p => p.Name == Name);
+
+
+    }
+
     async void HandleValidSubmit()
     {
-        ValidSubmit = true;
+        string json = File.ReadAllText("wwwroot/JsonData/AddTeam.json");
 
-        await Task.Delay(2000);
+        var jsonObj = JsonConvert.DeserializeObject<List<CricketTeam>>(json);
 
-        ValidSubmit = false;
+        var player = jsonObj.Where(p => p.Name == Name).First();
 
-        StateHasChanged();
+        player.Name = cricketeam.Name;
+        player.Logo = FileName;
+
+        player.Manager = cricketeam.Manager;
+        player.Contact = cricketeam.Contact;
+
+        //Removing old data of team and updating with new data 
+        var oldteam = jsonObj.Where(p => p.Name == Name).First();
+
+        jsonObj.Remove(oldteam);
+        jsonObj.Add(player);
+
+
+        var updatedJson = JsonConvert.SerializeObject(jsonObj);
+
+        File.WriteAllText("wwwroot/JsonData/AddTeam.json", updatedJson);
+
+        SubmitMessage = "Team Data Updated Successfully";
     }
 
     void HandleInvalidSubmit()

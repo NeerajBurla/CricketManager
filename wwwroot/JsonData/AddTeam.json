@@ -1,27 +1,51 @@
 [
   {
-    "Name": "NEC"
-    //"Manager": "neeraj",
-    //"Contact": 987867567785
+    "Logo": "neclogo.png",
+    "Name": "NEC",
+    "Manager": "Rohit Sargam",
+    "Contact": "839892211",
+    "NumberofPlayers": ""
   },
   {
-    "Name": "CSK"
-    //"Manager": "mol",
-    //"Contact": 987867567785
+    "Logo": "RCB.png",
+    "Name": "RCB",
+    "Manager": "Mustansir Sabir",
+    "Contact": "7832921111",
+    "NumberofPlayers": ""
   },
   {
-    "Name": "MI"
-    //"Manager": "Sohail",
-    //"Contact": 98786567785
+    "Logo": "KKR.png",
+    "Name": "KKR",
+    "Manager": "Vinay Kumar",
+    "Contact": "893202011",
+    "NumberofPlayers": ""
   },
   {
-    "Name": "KKR"
-    //"Manager": "Sohail",
-    //"Contact": 98786567785
+    "Logo": "Mi.png",
+    "Name": "MI",
+    "Manager": "Neeraj Burla",
+    "Contact": "829290101",
+    "NumberofPlayers": ""
   },
   {
-    "Name": "RCB"
-    //"Manager": "Sohail",
-    //"Contact": 98786567785
+    "Logo": "GT.png",
+    "Name": "Gujarat Titans",
+    "Manager": "Hardik Pandya",
+    "Contact": "728920202",
+    "NumberofPlayers": ""
+  },
+  {
+    "Logo": "KXIP.png",
+    "Name": "KXIP",
+    "Manager": "Amit Rane",
+    "Contact": "783291201",
+    "NumberofPlayers": ""
+  },
+  {
+    "Logo": "CSK.png",
+    "Name": "CSK",
+    "Manager": "Rohan Surve",
+    "Contact": "729101011",
+    "NumberofPlayers": ""
   }
 ]

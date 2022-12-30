@@ -1,4 +1,5 @@
 ﻿@page "/cricketteams"
+@inject HttpClient Http
 
 @using CricketManager.Models
 
@@ -9,12 +10,10 @@
     <GridColumns>
         <GridColumn Field="@(nameof(CricketTeam.Logo))">
             <Template>
-                @*<form action="/action_page.php">
-                    <input type="file" id="myFile" name="filename">
-                </form>*@
                 @{
-                    var employee = context as CricketTeam;
-                    <img class="rounded" src="@($"/neclogo.png")" alt="Team Logo" />
+                    <a href="@($"/playerlist/{((context as CricketTeam).Name)}")">
+                        <img class="rounded" src="@((context as CricketTeam).Logo)" alt="Team Logo" />
+                    </a>
                 }
             </Template>
         </GridColumn>
@@ -27,49 +26,73 @@
                 </a>
             </Template>
         </GridColumn>
-        <GridColumn Field="@(nameof(CricketTeam.NumberofPlayers))" />
+        <GridColumn Field="@(nameof(CricketTeam.NumberofPlayers))" Title=" Number of Players">
+            <Template>
+                    <span class="span-nav">
+                    @((context as CricketTeam).NumberofPlayers)
+                    </span>
+            </Template>
+        </GridColumn>
+        <GridColumn Field="Edit">
+            <Template>
+                <a href="@($"/editteam/{((context as CricketTeam).Name)}")" style="color: cadetblue; text-decoration:underline">
+                    Edit
+                </a>
+            </Template>
+        </GridColumn>
     </GridColumns>
+    <DetailTemplate>
+        @{
+            var team = context as CricketTeam;
+
+            <TelerikGrid Data="@team.Players"
+                     Height="300px"
+                     Pageable="true"
+                     Sortable="true"
+                     PageSize="5">
+                <GridColumns>
+                    <GridColumn Field=@nameof(addplayer.Name) Title="Name" />
+                    <GridColumn Field=@nameof(addplayer.BattingOrder) Title="Batting Order" />
+                    <GridColumn Field=@nameof(addplayer.Position) Title="Position" />
+                </GridColumns>
+            </TelerikGrid>
+        }
+    </DetailTemplate>
 </TelerikGrid>
 <TelerikButton>
-<a href="AddTeam">Add New Team</a>
+<a href="AddTeam" class="btn btn-primary">Add New Team</a>
 </TelerikButton>
 
 
 @code {
+    public CricketTeam[] theData;
 
-
-    public List<CricketTeam> theData = new List<CricketTeam>
+    protected async override Task OnInitializedAsync()
     {
-        new CricketTeam
-        {
-            Name = "NEC",
-            NumberofPlayers = "2",
-        },
-        new CricketTeam
-        {
-            Name = "MI",
-            NumberofPlayers = "4"
-        },
-        new CricketTeam
-        {
-            Name = "CSK",
-            NumberofPlayers = "10"
-        },
-         new CricketTeam
-        {
-            Name = "RCB",
-            NumberofPlayers = "10"
-        },
-         new CricketTeam
-        {
-            Name = "KKR",
-            NumberofPlayers = "10"
-        },
-         new CricketTeam
-        {
-            Name = "GT",
-            NumberofPlayers = "10"
-        },
+        if (Http.BaseAddress == null)
+            Http.BaseAddress = new Uri("https://localhost:5001/");
+        //Http.BaseAddress = new Uri("https://localhost:5001/");
+        var url = new Uri(Http.BaseAddress + "JsonData/AddTeam.json");
 
-    };
+        var playerinfo = await Http.GetAsync(url);
+        var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
+
+        theData = JsonConvert.DeserializeObject<CricketTeam[]>(playerResponseInfo);
+
+        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
+
+        var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
+        foreach (var item in theData)
+        {
+            var playerlist = jsonObj.Where(p => p.TeamName == item.Name);
+            item.NumberofPlayers = playerlist.Count().ToString();
+        }
+
+        foreach (var item in theData)
+        {
+            List<addplayer> player = jsonObj.Where(p => p.TeamName == item.Name).ToList();
+            item.Players = player;
+        }
+        
+    }
 }

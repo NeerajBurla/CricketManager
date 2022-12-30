@@ -47,7 +47,7 @@
 @code {
     public IsCaptain SelectedValue { get; set; } = IsCaptain.No;
 
-    public IEnumerable<addteam> myDdlData { get; set; }
+    public IEnumerable<CricketTeam> myDdlData { get; set; }
     public List<Captain> value { get; set; } = new List<Captain>()
     {
         new Captain() { Text = "Yes", Value = IsCaptain.Yes },
@@ -88,7 +88,7 @@
     protected async override Task OnInitializedAsync()
     {
         editPlayer = new addplayer();
-        myDdlData = new List<addteam>();
+        myDdlData = new List<CricketTeam>();
         if (Http.BaseAddress == null)
             Http.BaseAddress = new Uri("https://localhost:5001/");
         //Http.BaseAddress = new Uri("https://localhost:5001/");
@@ -96,7 +96,7 @@
 
         var playerinfo = await Http.GetAsync(url);
         var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
-        myDdlData = JsonConvert.DeserializeObject<addteam[]>(playerResponseInfo);
+        myDdlData = JsonConvert.DeserializeObject<CricketTeam[]>(playerResponseInfo);
     }
 
     async void HandleValidSubmit()

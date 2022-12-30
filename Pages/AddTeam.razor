@@ -1,60 +1,78 @@
 ﻿@page "/addteam"
 @inject HttpClient Http
 @using CricketManager.Models
+@using Telerik.Blazor.Components.FileSelect.Stream;
 @inject NavigationManager NavigationManager
 
+
 <h3>Add Team</h3>
-
+<h3>@SubmitMessage</h3>
 <div class="demo-section">
-    @if (ValidSubmit)
-    {
-        <div class="demo-alert demo-alert-success" role="alert">
-            The form was submitted successfully.
-        </div>
 
-    }
-    else
-    {
         <TelerikForm Model="@addteam"
-                 OnInvalidSubmit="@HandleInvalidSubmit">
+                 OnValidSubmit="@HandleValidSubmit">
             <FormValidation>
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidation>
             <FormItems>
-                <FormItem Field="@nameof(addteam.Name)"></FormItem>
-                <FormItem Field="@nameof(addteam.Manager)"></FormItem>
-                <FormItem Field="@nameof(addteam.Contact)"></FormItem>
+            <label class="k-label k-form-label">Logo:</label>
+            <TelerikFileSelect OnSelect="Filepath"
+                           AllowedExtensions="@( new List<string>() { ".png", ".jpeg" } )">
+            </TelerikFileSelect>
+                <FormItem Field="@nameof(CricketTeam.Name)"></FormItem>
+                <FormItem Field="@nameof(CricketTeam.Manager)"></FormItem>
+                <FormItem Field="@nameof(CricketTeam.Contact)"></FormItem>
              </FormItems>
             <FormButtons>
-                <TelerikButton ButtonType="ButtonType.Submit" OnClick="Toeditteam" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+                <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
                 <TelerikButton ButtonType="ButtonType.Button">Reset</TelerikButton>
             </FormButtons>
         </TelerikForm>
-
-    }
 </div>
 
 @code {
-    public addteam addteam { get; set; } = new addteam();
+
+    public string Name { get; set; }
+    public void Filepath(FileSelectEventArgs args)
+    {
+        foreach (var file in args.Files)
+        {
+            Name = file.Name;       
+        }
+    }
+    public string ToAbsoluteUrl(string url)
+    {
+        return $"{NavigationManager.BaseUri}{url}";
+    }
+    public CricketTeam addteam { get; set; } = new CricketTeam();
     //    {
     //        TeamName = "Nec",
     //        Manager = "neeraj",
     //        Contact = "987867567785",
     //    };
 
+    public string SubmitMessage { get; set; }
 
-    
     public bool ValidSubmit { get; set; } = false;
 
-    async void HandleValidSubmit()
+    public void HandleValidSubmit()
     {
-        ValidSubmit = true;
+        if (Http.BaseAddress == null)
+            Http.BaseAddress = new Uri("https://localhost:5001/");
+        //var url = new Uri(Http.BaseAddress + "JsonData/AddTeam.json");
 
-        await Task.Delay(2000);
+        string json = File.ReadAllText("wwwroot/JsonData/AddTeam.json");
 
-        ValidSubmit = false;
+        var jsonObj = JsonConvert.DeserializeObject<List<CricketTeam>>(json);
+        addteam.Logo = Name;
+        jsonObj.Add(addteam);
 
-        StateHasChanged();
+
+        var updatedJson = JsonConvert.SerializeObject(jsonObj);
+
+        File.WriteAllText("wwwroot/JsonData/AddTeam.json", updatedJson);
+
+        SubmitMessage = "New Team Added Successfully";
     }
 
     void HandleInvalidSubmit()
@@ -62,8 +80,4 @@
         ValidSubmit = false;
     }
 
-     public void Toeditteam()
-    {
-        NavigationManager.NavigateTo("EditTeam");
-    }
-}
+ }

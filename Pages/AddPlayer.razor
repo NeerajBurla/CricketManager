@@ -1,13 +1,11 @@
 ﻿@page "/addplayer"
 
-
 @using CricketManager.Models
 @using System.Text;
 @inject NavigationManager NavigationManager
-@inject HttpClient Http
+@inject HttpClient Http 
 
 <h3>Add Player</h3>
-<h3 class="alert-success k-form k-form-vertical">@SubmitMessage</h3>
 <div class="demo-section">
     @if (ValidSubmit)
     {
@@ -19,26 +17,18 @@
     {
         <TelerikForm Model="newPlayer"
                  @ref="@FormRef"
-                 OnInvalidSubmit="@HandleInvalidSubmit">
+                 OnValidSubmit="@HandleValidSubmit">
             <FormValidation>
                 <DataAnnotationsValidator></DataAnnotationsValidator>
             </FormValidation>
             <FormItems>
-                <h6 class="kd-demo-heading">Upload Logo</h6>
-                <div class="k-form-field">
-                    <div class="k-form-field-wrap">
-                        <TelerikUpload SaveUrl="@SaveUrl"
-                                   RemoveUrl="@RemoveUrl"
-                                   AllowedExtensions="@(new List<string>() { ".gif", ".jpg", ".png" })">
-                        </TelerikUpload>
-                        <div class="k-form-hint">You can only upload <strong> GIF</strong>, <strong> JPG</strong>, <strong> PNG</strong> image.</div>
-                    </div>
-                </div>
                @* <form action="/action_page.php">
                     <input type="file" id="myFile" name="filename">
                 </form>*@
                 <FormItem LabelText=" Name" Field="@(nameof(addplayer.Name))" />
-                <FormItem Field="@(nameof(addplayer.DateofBirth))" />
+
+                
+                <FormItem LabelText="Date Of Birth" Field="@(nameof(addplayer.DateofBirth))" />
                 <FormItem LabelText="Position" Field="@(nameof(addplayer.Position))" />
                 
                 
@@ -52,7 +42,7 @@
                     }
                 </InputRadioGroup>
                 </div>
-
+                <labeltext>Select Team:</labeltext>
                 <TelerikDropDownList Data="myDdlData" TextField="Name" ValueField="Name" @bind-Value="@newPlayer.TeamName">
                 </TelerikDropDownList>
                 <FormItem LabelText="BattingOrder" Field="@(nameof(addplayer.BattingOrder))" />
@@ -60,11 +50,11 @@
                 <FormItem LabelText="Rating" Field="@(nameof(addplayer.Rating))" />
             </FormItems>
             <FormButtons>
-                <input type="submit" value="Save" @onclick="HandleValidSubmit" class="btn btn-primary" />
+                <input type="submit" value="Save" @onclick="AddNotification" class="btn btn-primary" />
                           @* <TelerikButton ButtonType="ButtonType.Button" OnClick="@OnClear">Reset</TelerikButton>*@
             </FormButtons>
         </TelerikForm>
-
+        <TelerikNotification HorizontalPosition="@NotificationHorizontalPosition.Center" VerticalPosition="@NotificationVerticalPosition.Top" @ref="@NotificationReference" Class="MyTelerikNotification"></TelerikNotification>
         @* <TelerikGrid Data="@forecasts" Height="150px" Width="800px">
     <GridColumns>
     <GridColumn Field="@(nameof(addplayer.Name))" />
@@ -79,17 +69,21 @@
     }
 </div>
 @code {
-    public string SaveUrl => ToAbsoluteUrl("api/upload/save");
-    public string RemoveUrl => ToAbsoluteUrl("api/upload/remove");
-    public string ToAbsoluteUrl(string url)
-    {
-        return $"{NavigationManager.BaseUri}{url}";
-    }
-    private addplayer[] forecasts;
 
+    public TelerikNotification NotificationReference { get; set; }
+
+    public void AddNotification()
+    {
+        NotificationReference.Show(new NotificationModel()
+            {
+                Text = "New Player Added",
+                ThemeColor = ThemeConstants.Notification.ThemeColor.Success,
+                
+            });
+    }
     public string Selectedvalue { get; set; } = "Select team";
 
-    public IEnumerable<addteam> myDdlData { get; set; }
+    public IEnumerable<CricketTeam> myDdlData { get; set; }
     public string SubmitMessage { get; set; }
     //protected override async Task OnInitializedAsync()
     //{
@@ -108,7 +102,7 @@
     protected async override Task OnInitializedAsync()
     {
         newPlayer = new addplayer();
-        myDdlData = new List<addteam>();
+        myDdlData = new List<CricketTeam>();
         if (Http.BaseAddress == null)
             Http.BaseAddress = new Uri("https://localhost:5001/");
         //Http.BaseAddress = new Uri("https://localhost:5001/");
@@ -116,9 +110,9 @@
 
         var playerinfo = await Http.GetAsync(url);
         var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
-        myDdlData = JsonConvert.DeserializeObject<addteam[]>(playerResponseInfo);
+        myDdlData = JsonConvert.DeserializeObject<CricketTeam[]>(playerResponseInfo);
     }
-        
+
     public IsCaptain SelectedValue { get; set; } = IsCaptain.No;
     public List<Captain> value { get; set; } = new List<Captain>()
     {
@@ -179,24 +173,36 @@
 
         File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
 
-        SubmitMessage = "New Player Added Successfully";
+        
         //System.IO.File.AppendAllText("wwwroot/JsonData/aplayer.json", content);
 
-    }
-
-    public string AddObjectsToJson<T>(string json, List<T> objects)
-    {
-        List<T> list = JsonConvert.DeserializeObject<List<T>>(json);
-        list.AddRange(objects);
-        return JsonConvert.SerializeObject(list);
     }
 
     void HandleInvalidSubmit()
     {
         ValidSubmit = false;
     }
-    public void AddingtoEditTeam()
+
+    DateTime Date = DateTime.Today;
+
+    private List<string> WeatherOptions = new List<string>() { "cloudy", "rainy", "snowy", "sunny", "partly-sunny" };
+
+    void OnCalendarCellRenderHandler(DatePickerCalendarCellRenderEventArgs args)
     {
-        NavigationManager.NavigateTo("EditTeam");
+        foreach (var weather in WeatherOptions)
+        {
+            args.Class = "with-forecast " + WeatherOptions[args.Date.Day % WeatherOptions.Count];
+        }
     }
 }
+
+
+<style>
+    .MyTelerikNotification .k-notification-container .k-notification-wrap {
+        width: 300px;
+        height: 50px;
+        font-size: 1.5em;
+        text-align: center;
+        align-items: center;
+    }
+</style>
