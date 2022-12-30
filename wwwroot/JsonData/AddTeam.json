@@ -1,51 +1,75 @@
 [
   {
-    "Logo": "neclogo.png",
-    "Name": "NEC",
-    "Manager": "Rohit Sargam",
-    "Contact": "839892211",
-    "NumberofPlayers": ""
+    "Logo": "Mi.png",
+    "Name": "MI",
+    "Manager": "Neeraj Burla",
+    "Contact": "829290101",
+    "NumberofPlayers": "",
+    "Players": null
   },
   {
     "Logo": "RCB.png",
     "Name": "RCB",
-    "Manager": "Mustansir Sabir",
+    "Manager": "Rohit Sargam",
     "Contact": "7832921111",
-    "NumberofPlayers": ""
+    "NumberofPlayers": "",
+    "Players": null
   },
   {
     "Logo": "KKR.png",
     "Name": "KKR",
     "Manager": "Vinay Kumar",
     "Contact": "893202011",
-    "NumberofPlayers": ""
+    "NumberofPlayers": "",
+    "Players": null
   },
-  {
-    "Logo": "Mi.png",
-    "Name": "MI",
-    "Manager": "Neeraj Burla",
-    "Contact": "829290101",
-    "NumberofPlayers": ""
-  },
+
   {
     "Logo": "GT.png",
     "Name": "Gujarat Titans",
-    "Manager": "Hardik Pandya",
+    "Manager": "Mustansir Sabir",
     "Contact": "728920202",
-    "NumberofPlayers": ""
+    "NumberofPlayers": "",
+    "Players": null
   },
   {
     "Logo": "KXIP.png",
     "Name": "KXIP",
-    "Manager": "Amit Rane",
+    "Manager": "Rohan Surve",
     "Contact": "783291201",
-    "NumberofPlayers": ""
+    "NumberofPlayers": "",
+    "Players": null
   },
   {
     "Logo": "CSK.png",
     "Name": "CSK",
-    "Manager": "Rohan Surve",
+    "Manager": "Amit Patil",
     "Contact": "729101011",
-    "NumberofPlayers": ""
+    "NumberofPlayers": "",
+    "Players": null
+  },
+  {
+    "Logo": "SRH.png",
+    "Name": "Sunrisers Hyderabad",
+    "Manager": "Samarth Rane",
+    "Contact": "8729202020",
+    "NumberofPlayers": null,
+    "Players": null
+  },
+  {
+    "Logo": "LSG.png",
+    "Name": "Lucknow Super Giants",
+    "Manager": "Amol Mane",
+    "Contact": "7239290111",
+    "NumberofPlayers": null,
+    "Players": null
+  },
+  {
+    "Logo": "neclogo.png",
+    "Name": "NEC",
+    "Manager": "James Anderson",
+    "Contact": "839892211",
+    "NumberofPlayers": "",
+    "Players": null
   }
 ]

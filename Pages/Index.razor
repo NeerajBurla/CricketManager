@@ -4,17 +4,17 @@
 
 <h2 class="text-center" style="font-family:Papyrus">🏏Cricket Team Management🏏</h2>
 
-<div class="container" style="padding:20px;margin:40px;display:flex;flex-wrap:wrap;text-align:center">
+<div class="container" style="padding:20px;margin:40px; display:flex;flex-wrap:wrap;gap:20px;">
 
     @foreach (var item in theData)
     {
-        <a href="@($"/playerlist/{(item.Name)}")" style="text-decoration:none">
-            <TelerikCard Width="200px">
-            <img class="rounded" src="@(item.Logo)" alt="Team Logo" style="padding:20px;" />
-                <p>@item.Manager</p>
-                <p>@item.Name</p>
-            </TelerikCard>
+        <TelerikCard>
+        <a href="@($"/playerlist/{(item.Name)}")" style="text-decoration:none;text-align:center">
+                <img class="rounded" src="@(item.Logo)" alt="Team Logo" style="width:150px;aspect-ratio:3/2;object-fit:contain" />
+            <p>@item.Name</p>
+            <p>Manager: @item.Manager</p>
         </a>
+        </TelerikCard>
     }
 </div>
     

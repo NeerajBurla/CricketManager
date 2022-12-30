@@ -6,7 +6,7 @@
 
 <h3>Player List</h3>
 
-<div class="demo-container mb-md">
+<div class="demo-container mb-md" style="padding:20px;text-align:center">
     <label class="demo-spacing">File extension:</label>
     <TelerikDropDownList Data="@Formats" @bind-Value="@SelectedFormat" Width="140px">
         <DropDownListSettings>
@@ -18,7 +18,7 @@
                    Class="demo-spacing demo-button">Generate</TelerikButton>
 </div>
 <div>
-    <TelerikGrid Data="@theData" EditMode="@GridEditMode.Inline" OnCreate="CreateItem" OnUpdate="@MyOnUpdateHandler" ConfirmDelete="true" OnDelete="@DeleteHandler" Pageable="true" PageSize="5" Height="500px">
+    <TelerikGrid Data="@theData" EditMode="@GridEditMode.Inline" OnCreate="CreateItem" OnUpdate="@MyOnUpdateHandler" ConfirmDelete="true" OnDelete="@DeleteHandler" Pageable="true" PageSize="5">
         <GridToolBar>
             <GridCommandButton Command="Add" Icon="add">Add New Player</GridCommandButton>
         </GridToolBar>
@@ -184,8 +184,8 @@
     }
 
     Hashtable table = new Hashtable();
-    string SelectedFormat = "CSV";
-    string[] Formats = {"CSV", "TXT", "PDF" };
+    string SelectedFormat = "XLSX";
+    string[] Formats = { "XLSX", "CSV", "TXT", "PDF" };
 
     readonly int IndexColumnProductID = 0;
     readonly int IndexColumnProductName = 1;
@@ -215,6 +215,7 @@
         string mimeType = String.Empty;
         switch (GetFileExtention())
         {
+            case ".xlsx": mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; break;
             case ".pdf": mimeType = "application/pdf"; break;
             case ".txt": mimeType = "text/plain"; break;
             case ".csv": mimeType = "text/csv"; break;
@@ -227,6 +228,9 @@
         IWorkbookFormatProvider formatProvider;
         switch (extension)
         {
+            case ".xlsx":
+                formatProvider = new XlsxFormatProvider();
+                break;
             case ".csv":
                 formatProvider = new CsvFormatProvider();
                 ((CsvFormatProvider)formatProvider).Settings.HasHeaderRow = true;

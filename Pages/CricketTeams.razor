@@ -12,7 +12,7 @@
             <Template>
                 @{
                     <a href="@($"/playerlist/{((context as CricketTeam).Name)}")">
-                        <img class="rounded" src="@((context as CricketTeam).Logo)" alt="Team Logo" />
+                        <img class="rounded" src="@((context as CricketTeam).Logo)" alt="Team Logo" style="width:50%;aspect-ratio:3/2;object-fit:contain" />
                     </a>
                 }
             </Template>
