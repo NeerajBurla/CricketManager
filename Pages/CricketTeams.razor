@@ -1,12 +1,13 @@
 ﻿@page "/cricketteams"
 @inject HttpClient Http
+@inject IDataRepository<CricketTeam> teamRepository
 
 @using CricketManager.Models
 
 <h3>Cricket Teams</h3>
 
 
-<TelerikGrid Data="@theData" Height="500px" Width="1000px">
+<TelerikGrid Data="@theData" Height="500px" Width="1000px" OnDelete="DeleteHandler" ConfirmDelete="true">
     <GridColumns>
         <GridColumn Field="@(nameof(CricketTeam.Logo))">
             <Template>
@@ -33,14 +34,17 @@
                     </span>
             </Template>
         </GridColumn>
-        <GridColumn Field="Edit">
-            <Template>
-                <a href="@($"/editteam/{((context as CricketTeam).Name)}")" style="color: cadetblue; text-decoration:underline">
-                    Edit
-                </a>
-            </Template>
-        </GridColumn>
+        <GridCommandColumn>
+            <div class="row" style="padding:10px">
+                <GridCommandButton Command="Edit" Icon="edit">Edit</GridCommandButton>
+                <GridCommandButton Command="Delete" Icon="delete">Delete</GridCommandButton>
+            </div>
+            <GridCommandButton Command="Save" Icon="save" ShowInEdit="true">Update</GridCommandButton>
+            <GridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true">Cancel</GridCommandButton>
+
+        </GridCommandColumn>
     </GridColumns>
+
     <DetailTemplate>
         @{
             var team = context as CricketTeam;
@@ -64,21 +68,21 @@
 </TelerikButton>
 
 
+
 @code {
-    public CricketTeam[] theData;
+    public List<CricketTeam> theData;
+
+    public List<CricketTeam> detailData;
+    public bool WindowVisible { get; set; }
+
 
     protected async override Task OnInitializedAsync()
     {
-        if (Http.BaseAddress == null)
-            Http.BaseAddress = new Uri("https://localhost:5001/");
-        //Http.BaseAddress = new Uri("https://localhost:5001/");
-        var url = new Uri(Http.BaseAddress + "JsonData/AddTeam.json");
+        detailData = new List<CricketTeam>();
+        //Code to get all Cricket teams Data
+        theData = teamRepository.Get();
 
-        var playerinfo = await Http.GetAsync(url);
-        var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
-
-        theData = JsonConvert.DeserializeObject<CricketTeam[]>(playerResponseInfo);
-
+        //Code to Count the number of players in each team
         string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
 
         var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
@@ -88,11 +92,28 @@
             item.NumberofPlayers = playerlist.Count().ToString();
         }
 
+        //Code to display the detail of players in each team
         foreach (var item in theData)
         {
             List<addplayer> player = jsonObj.Where(p => p.TeamName == item.Name).ToList();
             item.Players = player;
         }
-        
+
     }
+
+    public async Task GetGridData()
+    {
+        theData = teamRepository.Get();
+    }
+
+    public async Task DeleteHandler(GridCommandEventArgs args)
+    {
+        CricketTeam itemToDelete = args.Item as CricketTeam;
+
+        //Code to Delete a Team from Teams List
+        teamRepository.Delete(itemToDelete);
+
+        await GetGridData();
+    }
+
 }

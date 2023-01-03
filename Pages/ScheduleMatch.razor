@@ -4,6 +4,7 @@
                   OnUpdate="@UpdateAppointment"
                   OnCreate="@AddAppointment"
                   OnDelete="@DeleteAppointment"
+                  ConfirmDelete="true"
                   OnEdit="@EditHandler" OnCancel="@CancelHandler"
                   AllowCreate="true" AllowDelete="true" AllowUpdate="true"
                   @bind-Date="@StartDate" Height="600px" @bind-View="@CurrView">
@@ -147,11 +148,23 @@
 
         public static async Task Update(SchedulerAppointment itemToUpdate)
         {
-            var index = _data.FindIndex(i => i.Id == itemToUpdate.Id);
-            if (index != -1)
-            {
-                _data[index] = itemToUpdate;
-            }
+            string json = File.ReadAllText("wwwroot/JsonData/matchSchedule.json");
+
+            var jsonObj = JsonConvert.DeserializeObject<List<SchedulerAppointment>>(json);
+
+            var schedule = jsonObj.Where(p => p.Id == itemToUpdate.Id).FirstOrDefault();
+
+            schedule = itemToUpdate;
+
+            var oldSchedule = jsonObj.Where(p => p.Id == itemToUpdate.Id).FirstOrDefault();
+
+            jsonObj.Remove(oldSchedule);
+            jsonObj.Add(schedule);
+
+            var updatedJson = JsonConvert.SerializeObject(jsonObj);
+
+            File.WriteAllText("wwwroot/JsonData/matchSchedule.json", updatedJson);
+
         }
 
         public static async Task Delete(SchedulerAppointment itemToDelete)
@@ -170,7 +183,18 @@
                 // items where theItem.RecurrenceId == itemToDelete.Id
             }
 
-            _data.Remove(itemToDelete);
+            string json = File.ReadAllText("wwwroot/JsonData/matchSchedule.json");
+
+            var jsonObj = JsonConvert.DeserializeObject<List<SchedulerAppointment>>(json);
+
+            var deleteSchedule = jsonObj.Where(p => p.Id == itemToDelete.Id).FirstOrDefault();
+
+            jsonObj.Remove(deleteSchedule);
+
+            var updatedJson = JsonConvert.SerializeObject(jsonObj);
+
+            File.WriteAllText("wwwroot/JsonData/matchSchedule.json", updatedJson);
+
         }
     }
 }

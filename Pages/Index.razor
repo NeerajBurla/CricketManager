@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject HttpClient Http
+@inject IDataRepository<CricketTeam> teamRepository
 
 
 <h2 class="text-center" style="font-family:Papyrus">🏏Cricket Team Management🏏</h2>
@@ -9,10 +10,9 @@
     @foreach (var item in theData)
     {
         <TelerikCard>
-        <a href="@($"/playerlist/{(item.Name)}")" style="text-decoration:none;text-align:center">
+        <a href="@($"/playerlist/{(item.Name)}")" style="text-decoration:none;text-align:center;color:black">
                 <img class="rounded" src="@(item.Logo)" alt="Team Logo" style="width:150px;aspect-ratio:3/2;object-fit:contain" />
             <p>@item.Name</p>
-            <p>Manager: @item.Manager</p>
         </a>
         </TelerikCard>
     }
@@ -25,15 +25,11 @@
     protected async override Task OnInitializedAsync()
     {
         theData = new List<CricketTeam>();
-        if (Http.BaseAddress == null)
-            Http.BaseAddress = new Uri("https://localhost:5001/");
-        //Http.BaseAddress = new Uri("https://localhost:5001/");
-        var url = new Uri(Http.BaseAddress + "JsonData/AddTeam.json");
 
-        var playerinfo = await Http.GetAsync(url);
-        var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
-
-        theData = JsonConvert.DeserializeObject<List<CricketTeam>>(playerResponseInfo);
+        theData = teamRepository.Get();
+        
     }
+
+
     
 }

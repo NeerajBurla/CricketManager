@@ -3,6 +3,7 @@
 @inject HttpClient Http
 @inject NavigationManager navigate
 @inject IJSRuntime JsRuntime
+@inject IDataRepository<addplayer> dataRepository
 
 <h3>Player List</h3>
 
@@ -18,7 +19,8 @@
                    Class="demo-spacing demo-button">Generate</TelerikButton>
 </div>
 <div>
-    <TelerikGrid Data="@theData" EditMode="@GridEditMode.Inline" OnCreate="CreateItem" OnUpdate="@MyOnUpdateHandler" ConfirmDelete="true" OnDelete="@DeleteHandler" Pageable="true" PageSize="5">
+    <TelerikGrid Data="@theData" EditMode="@GridEditMode.Inline" OnCreate="CreateItem" OnUpdate="@MyOnUpdateHandler" ConfirmDelete="true" OnDelete="@DeleteHandler" 
+        Pageable="true" PageSize="5">
         <GridToolBar>
             <GridCommandButton Command="Add" Icon="add">Add New Player</GridCommandButton>
         </GridToolBar>
@@ -34,11 +36,17 @@
             </GridColumn>
             <GridColumn Field="@(nameof(addplayer.DateofBirth))" />
             <GridColumn Field="@(nameof(addplayer.Position))" />
-            <GridColumn Field="@(nameof(addplayer.Captain))" />
+            <GridColumn Field="@(nameof(addplayer.Captain))"/>
             <GridColumn Field="@(nameof(addplayer.BattingOrder))" />
             <GridColumn Field="@(nameof(addplayer.BowlingStyle))" />
             <GridColumn Field="@(nameof(addplayer.Rating))" />
-            <GridColumn Field="@(nameof(addplayer.TeamName))" />
+            <GridColumn Field="@(nameof(addplayer.TeamName))"> @*Editable="false"*@
+                <Template>
+                    <span>
+                        @((context as addplayer).TeamName)
+                    </span>
+                </Template>
+            </GridColumn>
             <GridCommandColumn>
                 <div class="row" style="padding:10px">
                 <GridCommandButton Command="Edit" Icon="edit">Edit</GridCommandButton>
@@ -70,127 +78,51 @@
 
     protected override void OnParametersSet()
     {
-        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
-        List<addplayer> players = JsonConvert.DeserializeObject<List<addplayer>>(json);
-
-        List<addplayer> player = players.Where(p => p.TeamName == Name).ToList();
-
-        theData = player;
+        theData = dataRepository.GetDataByName(Name);
     }
 
     private async void CreateItem(GridCommandEventArgs args)
     {
-        CreatePlayer((addplayer)args.Item);
+        dataRepository.Add((addplayer)args.Item);
         await GetGridData();
-    }
-
-
-    private async Task MyOnUpdateHandler(GridCommandEventArgs args)
-    {
-        addplayer editPlayer = args.Item as addplayer;
-
-        await Update(editPlayer);
-
-        await GetGridData();
-
-        //var updatedJson = JsonConvert.SerializeObject(jsonObj);
-
-        //File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
-
     }
 
     async Task DeleteHandler(GridCommandEventArgs args)
     {
-        addplayer item = (addplayer)args.Item;
+        addplayer itemTodelete = (addplayer)args.Item;
 
-        await Delete(item);
+        //CODE TO DELETE A PLAYER FROM PLAYER LIST
+        dataRepository.Delete(itemTodelete);
 
         await GetGridData();
-
-    }
-
-    public void CreatePlayer(addplayer createPlayer)
-    {
-        if (Http.BaseAddress == null)
-            Http.BaseAddress = new Uri("https://localhost:5001/");
-        var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
-
-        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
-
-        var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
-
-        jsonObj.Add(createPlayer);
-
-
-        var updatedJson = JsonConvert.SerializeObject(jsonObj);
-
-        File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
 
     }
 
     async Task GetGridData()
     {
-        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
-        List<addplayer> players = JsonConvert.DeserializeObject<List<addplayer>>(json);
-
-        List<addplayer> player = players.Where(p => p.TeamName == Name).ToList();
-
-        theData = player;
+        //Code to get data of players categorised by team name
+        theData = dataRepository.GetDataByName(Name);
     }
 
 
-    public async Task Update(addplayer itemToUpdate)
+    public async Task MyOnUpdateHandler(GridCommandEventArgs args)
     {
-        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
+        addplayer itemToUpdate = args.Item as addplayer;
 
-        var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
+        //Code to update the player data in the player list
+        dataRepository.Update(itemToUpdate);
 
-        var player = jsonObj.Where(p => p.Name == itemToUpdate.Name).First();
-
-        player.Name = itemToUpdate.Name;
-        player.DateofBirth = itemToUpdate.DateofBirth;
-        player.Captain = itemToUpdate.Captain;
-        player.BattingOrder = itemToUpdate.BattingOrder;
-        player.BowlingStyle = itemToUpdate.BowlingStyle;
-        player.Rating = itemToUpdate.Rating;
-        player.Position = itemToUpdate.Position;
-        player.TeamName = itemToUpdate.TeamName;
-
-        var oldplayer = jsonObj.Where(p => p.Name == itemToUpdate.Name).First();
-
-        jsonObj.Remove(oldplayer);
-        jsonObj.Add(player);
-
-
-        var updatedJson = JsonConvert.SerializeObject(jsonObj);
-
-        File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
-    }
-
-    public async Task Delete(addplayer itemTodelete)
-    {
-        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
-
-        var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
-
-        var player = jsonObj.Where(p => p.Name == itemTodelete.Name).First();
-
-        jsonObj.Remove(player);
-
-        var updatedJson = JsonConvert.SerializeObject(jsonObj);
-
-        File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
-
+        await GetGridData();
     }
 
     Hashtable table = new Hashtable();
     string SelectedFormat = "XLSX";
     string[] Formats = { "XLSX", "CSV", "TXT", "PDF" };
 
-    readonly int IndexColumnProductID = 0;
-    readonly int IndexColumnProductName = 1;
-    readonly int IndexColumnUnitPrice = 2;
-    readonly int IndexColumnUnitsInStock = 3;
+    //readonly int IndexColumnProductID = 0;
+    //readonly int IndexColumnProductName = 1;
+    //readonly int IndexColumnUnitPrice = 2;
+    //readonly int IndexColumnUnitsInStock = 3;
     readonly int IndexColumnUnitsOnOrder = 4;
     readonly int IndexRowItemStart = 1;
 

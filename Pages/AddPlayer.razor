@@ -1,4 +1,6 @@
 ﻿@page "/addplayer"
+@inject IDataRepository<addplayer> dataRepository
+@inject IDataRepository<CricketTeam> teamRepository
 
 @using CricketManager.Models
 @using System.Text;
@@ -7,14 +9,6 @@
 
 <h3>Add Player</h3>
 <div class="demo-section">
-    @if (ValidSubmit)
-    {
-        <div class="demo-alert demo-alert-success" role="alert">
-            The form was submitted successfully.
-        </div>
-    }
-    else
-    {
         <TelerikForm Model="newPlayer"
                  @ref="@FormRef"
                  OnValidSubmit="@HandleValidSubmit">
@@ -55,18 +49,6 @@
             </FormButtons>
         </TelerikForm>
         <TelerikNotification HorizontalPosition="@NotificationHorizontalPosition.Center" VerticalPosition="@NotificationVerticalPosition.Top" @ref="@NotificationReference" Class="MyTelerikNotification"></TelerikNotification>
-        @* <TelerikGrid Data="@forecasts" Height="150px" Width="800px">
-    <GridColumns>
-    <GridColumn Field="@(nameof(addplayer.Name))" />
-    <GridColumn Field="@(nameof(addplayer.DateofBirth))" />
-    <GridColumn Field="@(nameof(addplayer.Position))" />
-    <GridColumn Field="@(nameof(addplayer.Captain))" />
-    <GridColumn Field="@(nameof(addplayer.BattingOrder))" />
-    <GridColumn Field="@(nameof(addplayer.BowlingStyle))" />
-    <GridColumn Field="@(nameof(addplayer.Rating))" />
-    </GridColumns>
-    </TelerikGrid>*@
-    }
 </div>
 @code {
 
@@ -78,39 +60,21 @@
             {
                 Text = "New Player Added",
                 ThemeColor = ThemeConstants.Notification.ThemeColor.Success,
-                
+
             });
     }
     public string Selectedvalue { get; set; } = "Select team";
 
-    public IEnumerable<CricketTeam> myDdlData { get; set; }
-    public string SubmitMessage { get; set; }
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    newPlayer = new addplayer();
-    //    if (Http.BaseAddress == null)
-    //        Http.BaseAddress = new Uri("https://localhost:5001/");
-    //    var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
+    public IEnumerable<CricketTeam> myDdlData { get; set; } = new List<CricketTeam>();
 
-    //    var playerinfo = await Http.GetAsync(url);
-    //    var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
-
-
-    //    forecasts = JsonConvert.DeserializeObject<addplayer[]>(playerResponseInfo);
-    //}
 
     protected async override Task OnInitializedAsync()
     {
         newPlayer = new addplayer();
-        myDdlData = new List<CricketTeam>();
-        if (Http.BaseAddress == null)
-            Http.BaseAddress = new Uri("https://localhost:5001/");
-        //Http.BaseAddress = new Uri("https://localhost:5001/");
-        var url = new Uri(Http.BaseAddress + "JsonData/AddTeam.json");
+        //Fetch all list of teams to populate the dropdown
+        myDdlData = teamRepository.Get();
 
-        var playerinfo = await Http.GetAsync(url);
-        var playerResponseInfo = await playerinfo.Content.ReadAsStringAsync();
-        myDdlData = JsonConvert.DeserializeObject<CricketTeam[]>(playerResponseInfo);
+        await base.OnInitializedAsync();
     }
 
     public IsCaptain SelectedValue { get; set; } = IsCaptain.No;
@@ -124,10 +88,6 @@
     {
         public string Text { get; set; }
         public IsCaptain Value { get; set; }
-
-        public Captain()
-        {
-        }
     }
 
     public enum IsCaptain
@@ -138,49 +98,19 @@
     public TelerikForm FormRef { get; set; }
 
     public addplayer newPlayer { get; set; }
-    public bool ValidSubmit { get; set; } = false;
 
-    public addplayer TestApplication { get; set; } = new addplayer();
-
-    public List<captainmodel> captain { get; set; } = new List<captainmodel>()
+    public List<CaptainModel> captain { get; set; } = new List<CaptainModel>()
 {
-        new captainmodel() { Value = 1, Text = "Yes" },
-        new captainmodel() { Value = 2, Text = "No" },
+        new CaptainModel() { Value = 1, Text = "Yes" },
+        new CaptainModel() { Value = 2, Text = "No" },
     };
 
-    //private void OnClear()
-    //{
-    //    TestApplication = new addplayer();
-
-    //    TestEditContext = new EditContext(TestApplication);
-    //    TestEditContext.EnableDataAnnotationsValidation();
-    //}
 
     public void HandleValidSubmit()
     {
-        if (Http.BaseAddress == null)
-            Http.BaseAddress = new Uri("https://localhost:5001/");
-        var url = new Uri(Http.BaseAddress + "JsonData/aplayer.json");
+       //Code to add a new player in Cricket Manager 
+        dataRepository.Add(newPlayer);
 
-        string json = File.ReadAllText("wwwroot/JsonData/aplayer.json");
-
-        var jsonObj = JsonConvert.DeserializeObject<List<addplayer>>(json);
-
-        jsonObj.Add(newPlayer);
-
-
-        var updatedJson = JsonConvert.SerializeObject(jsonObj);
-
-        File.WriteAllText("wwwroot/JsonData/aplayer.json", updatedJson);
-
-        
-        //System.IO.File.AppendAllText("wwwroot/JsonData/aplayer.json", content);
-
-    }
-
-    void HandleInvalidSubmit()
-    {
-        ValidSubmit = false;
     }
 
     DateTime Date = DateTime.Today;

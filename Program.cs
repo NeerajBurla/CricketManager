@@ -1,5 +1,7 @@
 ﻿
 using CricketManager.Data;
+using CricketManager.Models;
+using CricketManager.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -11,6 +13,8 @@ builder.Services.AddScoped<HttpClient>();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddTelerikBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddScoped<IDataRepository<addplayer>, PlayerRepository>();
+builder.Services.AddScoped<IDataRepository<CricketTeam>,CricketTeamRepository>();
 
 
 var app = builder.Build();

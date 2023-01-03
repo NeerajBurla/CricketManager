@@ -1,6 +1,6 @@
 ﻿namespace CricketManager.Models
 {
-    public class captainmodel
+    public class CaptainModel
     {
         public int Value { get; set; }
 

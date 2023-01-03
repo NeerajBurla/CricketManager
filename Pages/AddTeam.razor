@@ -6,7 +6,6 @@
 
 
 <h3>Add Team</h3>
-<h3>@SubmitMessage</h3>
 <div class="demo-section">
 
         <TelerikForm Model="@addteam"
@@ -24,13 +23,25 @@
                 <FormItem Field="@nameof(CricketTeam.Contact)"></FormItem>
              </FormItems>
             <FormButtons>
-                <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)">Save</TelerikButton>
+            <TelerikButton ButtonType="ButtonType.Submit" ThemeColor="@(ThemeConstants.Button.ThemeColor.Primary)" @onclick="AddNotification">Save</TelerikButton>
                 <TelerikButton ButtonType="ButtonType.Button">Reset</TelerikButton>
             </FormButtons>
         </TelerikForm>
+    <TelerikNotification HorizontalPosition="@NotificationHorizontalPosition.Center" VerticalPosition="@NotificationVerticalPosition.Top" @ref="@NotificationReference" Class="MyTelerikNotification"></TelerikNotification>
 </div>
 
 @code {
+    public TelerikNotification NotificationReference { get; set; }
+
+    public void AddNotification()
+    {
+        NotificationReference.Show(new NotificationModel()
+            {
+                Text = "New Team Added",
+                ThemeColor = ThemeConstants.Notification.ThemeColor.Success,
+
+            });
+    }
 
     public string Name { get; set; }
     public void Filepath(FileSelectEventArgs args)
@@ -51,28 +62,24 @@
     //        Contact = "987867567785",
     //    };
 
-    public string SubmitMessage { get; set; }
-
     public bool ValidSubmit { get; set; } = false;
 
     public void HandleValidSubmit()
     {
-        if (Http.BaseAddress == null)
-            Http.BaseAddress = new Uri("https://localhost:5001/");
-        //var url = new Uri(Http.BaseAddress + "JsonData/AddTeam.json");
-
-        string json = File.ReadAllText("wwwroot/JsonData/AddTeam.json");
+        string json = System.IO.File.ReadAllText("wwwroot/JsonData/AddTeam.json");
 
         var jsonObj = JsonConvert.DeserializeObject<List<CricketTeam>>(json);
-        addteam.Logo = Name;
-        jsonObj.Add(addteam);
 
+        addteam.Logo = Name;
+
+        addteam.Id = jsonObj.Count() + 2;
+
+        jsonObj.Add(addteam);
 
         var updatedJson = JsonConvert.SerializeObject(jsonObj);
 
-        File.WriteAllText("wwwroot/JsonData/AddTeam.json", updatedJson);
-
-        SubmitMessage = "New Team Added Successfully";
+        System.IO.File.WriteAllText("wwwroot/JsonData/AddTeam.json", updatedJson);
+        
     }
 
     void HandleInvalidSubmit()
@@ -81,3 +88,12 @@
     }
 
  }
+<style>
+    .MyTelerikNotification .k-notification-container .k-notification-wrap {
+        width: 300px;
+        height: 50px;
+        font-size: 1.5em;
+        text-align: center;
+        align-items: center;
+    }
+</style>

@@ -79,10 +79,10 @@
     public string SubmitMessage { get; set; }
 
     public addplayer editPlayer { get; set; } 
-    public List<captainmodel> captain { get; set; } = new List<captainmodel>()
+    public List<CaptainModel> captain { get; set; } = new List<CaptainModel>()
 {
-        new captainmodel() { Value = 1, Text = "Yes" },
-        new captainmodel() { Value = 2, Text = "No" },
+        new CaptainModel() { Value = 1, Text = "Yes" },
+        new CaptainModel() { Value = 2, Text = "No" },
     };
 
     protected async override Task OnInitializedAsync()
