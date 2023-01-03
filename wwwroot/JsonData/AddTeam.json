@@ -1,1 +1,75 @@
-[{"Id":1,"Logo":"RCB.png","Name":"Royal Challengers","Manager":"Prashant Ghadge","Contact":"7832921111","NumberofPlayers":"","Players":null},{"Id":2,"Logo":"KKR.png","Name":"Kolkata Knight Riders","Manager":"Sandeep Kumar","Contact":"893202011","NumberofPlayers":"","Players":null},{"Id":3,"Logo":"Mi.png","Name":"Mumbai Indians","Manager":"Neeraj","Contact":"829290101","NumberofPlayers":"","Players":null},{"Id":4,"Logo":"KXIP.png","Name":"Punjab Kings","Manager":"Preety Zinta","Contact":"783291201","NumberofPlayers":"","Players":null},{"Id":5,"Logo":"CSK.png","Name":"Chennai Super Kings","Manager":"Pritam Surve","Contact":"729101011","NumberofPlayers":"","Players":null},{"Id":6,"Logo":"SRH.png","Name":"Sunrisers Hyderabad","Manager":"David Warner","Contact":"8729202020","NumberofPlayers":null,"Players":null},{"Id":8,"Logo":"neclogo.png","Name":"NEC","Manager":"James Anderson","Contact":"839892211","NumberofPlayers":"","Players":null},{"Id":9,"Logo":"LSG.png","Name":"Lucknow Super Giants","Manager":"Pointing","Contact":"78298192","NumberofPlayers":null,"Players":null}]
+[
+  {
+    "Id": 1,
+    "Logo": "neclogo.png",
+    "Name": "NEC",
+    "Manager": "James Anderson",
+    "Contact": "839892211",
+    "NumberofPlayers": "",
+    "Players": null
+  },
+  {
+    "Id": 2,
+    "Logo": "RCB.png",
+    "Name": "Royal Challengers",
+    "Manager": "Prashant Ghadge",
+    "Contact": "7832921111",
+    "NumberofPlayers": "",
+    "Players": null
+  },
+  {
+    "Id": 3,
+    "Logo": "KKR.png",
+    "Name": "Kolkata Knight Riders",
+    "Manager": "Sandeep Kumar",
+    "Contact": "893202011",
+    "NumberofPlayers": "",
+    "Players": null
+  },
+  {
+    "Id": 4,
+    "Logo": "Mi.png",
+    "Name": "Mumbai Indians",
+    "Manager": "Neeraj",
+    "Contact": "829290101",
+    "NumberofPlayers": "",
+    "Players": null
+  },
+  {
+    "Id": 5,
+    "Logo": "KXIP.png",
+    "Name": "Punjab Kings",
+    "Manager": "Preety Zinta",
+    "Contact": "783291201",
+    "NumberofPlayers": "",
+    "Players": null
+  },
+  {
+    "Id": 6,
+    "Logo": "CSK.png",
+    "Name": "Chennai Super Kings",
+    "Manager": "Pritam Surve",
+    "Contact": "729101011",
+    "NumberofPlayers": "",
+    "Players": null
+  },
+  {
+    "Id": 7,
+    "Logo": "SRH.png",
+    "Name": "Sunrisers Hyderabad",
+    "Manager": "David Warner",
+    "Contact": "8729202020",
+    "NumberofPlayers": null,
+    "Players": null
+  },
+
+  {
+    "Id": 8,
+    "Logo": "LSG.png",
+    "Name": "Lucknow Super Giants",
+    "Manager": "Pointing",
+    "Contact": "78298192",
+    "NumberofPlayers": null,
+    "Players": null
+  }
+]
